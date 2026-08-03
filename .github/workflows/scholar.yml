@@ -1,4 +1,4 @@
-name: Refresh Scholar citations
+name: Refresh citation count
 
 on:
   schedule:
@@ -18,32 +18,20 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Fetch citation count from Google Scholar
+      - name: Fetch citation count (OpenAlex, Crossref fallback)
         id: cites
         shell: bash
         run: |
-          set +e   # never abort mid-parse; we handle failure explicitly below
-          UA='Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0 Safari/537.36'
-          URL='https://scholar.google.com/citations?user=QTYlmK0AAAAJ&hl=en'
-          code="$(curl -sSL --compressed -A "$UA" -w '%{http_code}' -o page.html "$URL")"
-          bytes="$(wc -c < page.html | tr -d ' ')"
-          echo "http=$code bytes=$bytes"
-          if grep -qiE 'not a robot|unusual traffic|/sorry/|enablejs' page.html; then
-            echo "::warning::Scholar returned a bot-check / block page."
-          fi
-          # The citation-indices table lists Citations (All) as the first gsc_rsb_std cell.
-          n="$(grep -oE 'gsc_rsb_std">[0-9]+' page.html | head -1 | grep -oE '[0-9]+')"
+          set +e   # never abort mid-fetch; we decide below
+          n="$(python3 scripts/fetch_cites.py)"
           if [ -z "$n" ]; then
-            echo "::warning::Could not parse a citation count. Keeping the last committed value."
-            echo "first matches in page (if any):"
-            grep -oE 'gsc_rsb_std[^<]*' page.html | head -5 || true
+            echo "::warning::Could not resolve any DOI. Keeping the last committed value."
             echo "ok=0" >> "$GITHUB_OUTPUT"
           else
-            echo "Parsed citation count: $n"
+            echo "Total citations: $n"
             echo "count=$n" >> "$GITHUB_OUTPUT"
             echo "ok=1" >> "$GITHUB_OUTPUT"
           fi
-          rm -f page.html
 
       - name: Write the count into the page
         if: steps.cites.outputs.ok == '1'

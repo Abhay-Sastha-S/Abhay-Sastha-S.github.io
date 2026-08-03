@@ -1,0 +1,4 @@
+# DOIs of published, indexed work — one per line. Blank lines and #comments ignored.
+# The monthly workflow sums citation counts across these (OpenAlex, Crossref fallback).
+# Add a line as new papers get a DOI.
+10.1007/s12065-025-01119-6
