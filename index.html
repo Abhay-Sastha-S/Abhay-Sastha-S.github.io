@@ -1291,8 +1291,8 @@
         <div class="layer">
           <h2>Clauding</h2>
           <p class="note">
-            Tools I built for my own Claude Code workflow, then cleaned up and released. Both are local,
-            dependency-free, and solve something that was annoying me daily.
+            Tools I built for my own Claude Code workflow, then cleaned up and released. Each one runs on
+            my own machine, carries no runtime dependencies, and solves something that was annoying me daily.
           </p>
         </div>
       </div>
@@ -1509,6 +1509,118 @@
           </div>
         </article>
       </div>
+
+      <div class="row">
+        <article class="blk">
+          <div class="blk-in">
+            <div>
+              <h3><a href="https://github.com/Abhay-Sastha-S/pr-control">PR Control</a></h3>
+              <p class="meta"><span class="venue">Claude Code plugin</span> &nbsp;·&nbsp; Python, no dependencies</p>
+              <p class="body">
+                One page for every pull request in flight, joining GitHub with the review-channel messages that
+                asked for review, the tickets they close, and the local Claude sessions that wrote them &mdash; then
+                computing the order they actually have to merge in.
+              </p>
+              <p class="refs">
+                <button class="more" onclick="openMore('prc')">read more</button>
+                <a href="https://github.com/Abhay-Sastha-S/pr-control">code</a>
+                <a href="https://abhay-sastha-s.github.io/pr-control/">site</a>
+              </p>
+              <div class="tags">
+                <span class="tag">Claude Code</span>
+                <span class="tag">Developer Tools</span>
+                <span class="tag">Dependency Graphs</span>
+              </div>
+
+              <template id="full-prc" data-title="PR Control">
+                <p>One page for every pull request I have in flight &mdash; and, more usefully, the order they
+                   actually have to merge in. It cross-references four sources that never talk to each other: GitHub
+                   PRs, the review-channel messages that asked someone to look at them, the tickets they close, and
+                   the local Claude Code sessions that wrote them.</p>
+
+                <h4>Why it exists</h4>
+                <p>Past three or four open PRs across a few repos, the question stops being &ldquo;what is the status
+                   of this PR&rdquo; &mdash; GitHub answers that fine &mdash; and becomes:</p>
+                <ul>
+                  <li><strong>&ldquo;Open&rdquo; collapses four situations into one word.</strong> Waiting on a first
+                      review, waiting on requested changes, approved and waiting for a human to press merge, and
+                      blocked behind someone else's deploy are completely different problems, and only one of them is
+                      my move. All four render as the same green badge.</li>
+                  <li><strong>The merge order lives where no API can see it.</strong> A sentence in a Slack thread
+                      (&ldquo;merge the backend one first or the page 404s&rdquo;), two PRs closing the same ticket, a
+                      pair of stacked branches. Get it wrong and the afternoon goes to rebasing.</li>
+                  <li><strong>A PR nobody was told about isn't in review</strong> &mdash; it is just open. That gap is
+                      invisible on GitHub, where the PR looks perfectly healthy.</li>
+                  <li><strong>The reasoning is in a session I can't name.</strong> Why I made a call four days ago is
+                      in a transcript identified by a UUID, so each PR links back to the sessions that touched it with
+                      a ready-to-paste <code>claude --resume</code>.</li>
+                </ul>
+
+                <h4>What it computes</h4>
+                <p>The heart of it is an edge set &mdash; <em>a must merge before b</em> &mdash; derived in precedence
+                   order: channel-stated chains first (highest authority, and hand-maintained because no API exposes
+                   them), then branch stacks, then two open PRs sharing a ticket, then same-repo ordering where an
+                   older PR ahead of mine forces a rebase. Ties break on a configurable service rank &mdash; shared
+                   libraries before services, services before user-facing apps. The result renders as a parallel tree:
+                   what is ready now, what is gated, and whose deploy I am waiting on. Other people's PRs are pulled
+                   in only when they share an edge with one of mine.</p>
+
+                <h4>Publishing it meant taking my employer out of it</h4>
+                <p>The original was written against one org, one Slack channel, my teammates' names and a hardcoded
+                   list of dependency chains, spread across the merge script, the build script and the page template.
+                   Every one of those values now comes from a config file that is never committed, and the release
+                   check fails the build if a config file, a Slack export or a built page is ever staged &mdash; so the
+                   repo cannot start leaking by accident. The page template holds no organisation strings either; it
+                   labels itself at runtime from a metadata block the build injects.</p>
+
+                <h4>The test that earned its place</h4>
+                <p>The tracker is one large inline script, and a syntax check only proves it parses &mdash; a
+                   <code>const</code> used above its own declaration parses perfectly and then renders a blank page.
+                   So the build runs the finished page against a DOM shim and fails on load-time errors. It caught
+                   exactly that bug while I was packaging it.</p>
+              </template>
+            </div>
+
+            <figure class="plate">
+              <svg viewBox="0 0 260 170" role="img" aria-label="Merge-order tree: two ready pull requests, two gated behind them, one merged">
+                <g stroke="#1A1815" stroke-width="1.1" fill="none" opacity="0.5">
+                  <path d="M56 44 L56 68 L56 74"/>
+                  <path d="M56 68 L150 68 L150 74"/>
+                  <path d="M180 44 L180 68 L206 68 L206 74"/>
+                  <path d="M56 110 L56 130 L110 130 L110 136"/>
+                </g>
+                <g fill="none" stroke="#1A1815" stroke-width="1.2">
+                  <rect x="20" y="24" width="72" height="20" rx="2"/>
+                  <rect x="146" y="24" width="72" height="20" rx="2"/>
+                  <rect x="20" y="74" width="72" height="36" rx="2"/>
+                  <rect x="114" y="74" width="72" height="36" rx="2"/>
+                  <rect x="74" y="136" width="72" height="20" rx="2"/>
+                </g>
+                <g fill="#9C4221">
+                  <rect x="20" y="24" width="2.6" height="20"/>
+                  <rect x="146" y="24" width="2.6" height="20"/>
+                </g>
+                <g fill="#1A1815" opacity="0.42">
+                  <rect x="20" y="74" width="2.6" height="36"/>
+                  <rect x="114" y="74" width="2.6" height="36"/>
+                  <rect x="74" y="136" width="2.6" height="20"/>
+                </g>
+                <g fill="#1A1815" opacity="0.24">
+                  <rect x="30" y="31" width="40" height="3.4" rx="1.7"/>
+                  <rect x="156" y="31" width="34" height="3.4" rx="1.7"/>
+                  <rect x="30" y="82" width="46" height="3.4" rx="1.7"/>
+                  <rect x="30" y="91" width="30" height="3.4" rx="1.7"/>
+                  <rect x="124" y="82" width="38" height="3.4" rx="1.7"/>
+                  <rect x="124" y="91" width="48" height="3.4" rx="1.7"/>
+                  <rect x="84" y="143" width="42" height="3.4" rx="1.7"/>
+                </g>
+              </svg>
+              <figcaption>what merges before what</figcaption>
+            </figure>
+          </div>
+        </article>
+      </div>
+
     </div>
 
     <!-- ======================= BLOGS ======================= -->
