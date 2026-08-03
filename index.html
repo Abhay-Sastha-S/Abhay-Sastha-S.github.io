@@ -5,7 +5,7 @@
   <meta charset="utf-8">
   <title>Abhay Sastha S</title>
   <meta name="author" content="Abhay Sastha S">
-  <meta name="description" content="Abhay Sastha S — AI engineer at MyFi (TIFIN), building agentic systems for an AI wealth advisor. Research on Mixture-of-Experts aggregation, efficient inference, and multimodal retrieval.">
+  <meta name="description" content="Abhay Sastha S — AI engineer at MyFi (TIFIN). Perception and audio, then language, now agents — working toward multimodal systems that take every modality in and produce actions out.">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="canonical" href="https://abhay-sastha-s.github.io/">
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -142,6 +142,16 @@
     }
     .layer .note { color: var(--dim); font-size: 15px; max-width: 60ch; margin: 0; }
 
+    /* ============ project groups ============ */
+    .group { padding: 6px 0 18px; }
+    .group-lbl {
+      font-family: var(--mono); font-size: 10.5px; font-weight: 500;
+      letter-spacing: .14em; text-transform: uppercase;
+      color: var(--rust); margin: 0 0 5px;
+    }
+    .group-note { margin: 0; font-size: 14.2px; color: var(--dim); max-width: 58ch; }
+    .group + * { margin-top: 0; }
+
     /* ============ entry block ============ */
     .blk { padding-bottom: 46px; }
 
@@ -221,6 +231,69 @@
       color: var(--faint);
       margin-top: 9px;
       text-align: center;
+    }
+
+    /* ============ read-more + modal ============ */
+    .more {
+      appearance: none; background: none; border: 0; padding: 0;
+      cursor: pointer;
+      font-family: var(--mono); font-size: 11px; letter-spacing: .04em;
+      color: var(--rust);
+      border-bottom: 1px solid rgba(156, 66, 33, 0.28);
+      transition: color .18s ease, border-color .18s ease;
+    }
+    .more:hover { color: var(--ink); border-bottom-color: var(--ink); }
+
+    dialog.modal {
+      padding: 0;
+      border: 1px solid var(--rule);
+      border-radius: 3px;
+      background: var(--paper);
+      color: var(--ink);
+      width: min(660px, calc(100vw - 40px));
+      max-height: min(80vh, 720px);
+      box-shadow: 0 18px 48px rgba(26, 24, 21, 0.16);
+    }
+    dialog.modal[open] { display: flex; flex-direction: column; }
+    dialog.modal::backdrop { background: rgba(26, 24, 21, 0.42); }
+
+    .modal-head {
+      display: flex; align-items: flex-start; justify-content: space-between; gap: 20px;
+      padding: 20px 24px 15px;
+      border-bottom: 1px solid var(--rule);
+      flex: 0 0 auto;
+    }
+    .modal-head h3 { margin: 0; font-size: 17px; font-weight: 600; line-height: 1.34; }
+    .modal-x {
+      appearance: none; background: none; border: 0; cursor: pointer;
+      font-family: var(--mono); font-size: 15px; line-height: 1;
+      color: var(--faint); padding: 2px 4px;
+    }
+    .modal-x:hover { color: var(--ink); }
+    .modal-body:focus { outline: none; }
+    .modal-x:focus-visible, .more:focus-visible, .tab:focus-visible {
+      outline: 1px solid var(--rust); outline-offset: 3px;
+    }
+
+    .modal-body {
+      padding: 18px 24px 26px;
+      overflow-y: auto;
+      flex: 1 1 auto;
+      overscroll-behavior: contain;
+    }
+    .modal-body p { margin: 0 0 12px; font-size: 15.2px; color: #2B2621; }
+    .modal-body p:last-child { margin-bottom: 0; }
+    .modal-body ul { margin: 0 0 12px; padding-left: 18px; }
+    .modal-body li { margin-bottom: 7px; font-size: 15px; color: #2B2621; }
+    .modal-body li::marker { color: var(--faint); }
+    .modal-body h4 {
+      font-family: var(--mono); font-size: 10.5px; letter-spacing: .12em;
+      text-transform: uppercase; color: var(--faint);
+      margin: 20px 0 9px; font-weight: 500;
+    }
+    .modal-body .aside {
+      border-left: 2px solid var(--rule);
+      padding-left: 14px; color: var(--dim); font-size: 14.4px;
     }
 
     /* ============ cv entries ============ */
@@ -320,21 +393,70 @@
         <h1>Abhay Sastha S</h1>
         <div class="bio">
           <p>
-            I am an AI engineer at <a href="https://www.askmyfi.com/">MyFi</a> (TIFIN), where I build agentic systems
-            for an AI wealth advisor aimed at Indian retail investors. I interned on the same team for about a year
-            before going full time in June 2026 — working on multi-agent orchestration, retrieval, and low-latency
-            model serving for assistants deployed at MyFi, SBI, Axis, DSP, and Motilal.
+            I am an AI engineer at <a href="https://www.askmyfi.com/">MyFi</a> (TIFIN), where I build the agentic
+            systems behind an AI wealth advisor for Indian retail investors.
           </p>
           <p>
-            I am finishing two undergraduate degrees at once — a B.Tech in Computer Science at
-            <a href="https://vit.ac.in/">VIT Vellore</a> and a BS in Data Science and Applications at
-            <a href="https://study.iitm.ac.in/ds/">IIT Madras</a>.
+            I started in perception — computer vision and audio on small devices, where a model had to read a
+            physical signal and make something happen. Language came next, and pulled that work back in: the table
+            and chart extractors inside the multimodal RAG system I built were the same vision problem, now feeding
+            an LLM, and audio returned the same way as a served TTS voice. The current work is agents — systems that
+            decide what to do, not only what to say.
           </p>
           <p>
-            My current research is on <strong>Mixture-of-Experts architectures</strong> — specifically on the fact that
-            an MoE router decides how to combine expert outputs before a single expert has run. Beyond that I am drawn to
-            efficient inference and distillation, multimodal document understanding, and metaheuristic optimization.
+            Each step has added either a modality or the ability to act, mostly one at a time. What I want to work
+            on is the system that holds all of them at once: vision, audio, language and state going in, actions
+            coming out, against a learned model of how the world responds. World models and robot policies are
+            where that ends up, and it is the direction I am deliberately building toward.
           </p>
+          <p>
+            Alongside this I research Mixture-of-Experts architectures, and I am finishing two undergraduate
+            degrees in parallel — a B.Tech in Computer Science at <a href="https://vit.ac.in/">VIT Vellore</a> and a
+            BS in Data Science at <a href="https://study.iitm.ac.in/ds/">IIT Madras</a>.
+          </p>
+          <p class="refs" style="margin-top:16px">
+            <button class="more" onclick="openMore('story')">the longer version</button>
+          </p>
+
+          <template id="full-story" data-title="How I got here">
+            <h4>Perception, on hardware &middot; 2023</h4>
+            <p>At Cre-AID Labs I worked on real-time hotword voice detection and actuation running on a low-resource
+               device, a hand-measurement system built with PyTorch, Detectron and U²-Net, a crack and abnormality
+               detection framework that cut quality-check time by 86%, and an EMG biofeedback device prototyped at
+               98% below the cost of market alternatives — plus the GATT Bluetooth protocol the app used to talk to
+               it. All of it was the same shape of problem: read a physical signal, decide, make something happen.</p>
+
+            <h4>Vision as its own problem &middot; 2024</h4>
+            <p>Charto grew out of that — porting a Caffe2 model to a hand-written Detectron2 Faster R-CNN with FPN to
+               recover structured values from chart images, and getting to 80–85% with systematic detection and OCR.
+               Trackem did cross-camera re-identification across simultaneous feeds. Coursework filled in the theory:
+               computer vision at IIT Madras, automatic speech recognition at IIT Bombay.</p>
+
+            <h4>Language &middot; 2025</h4>
+            <p>At MyFi I moved to LLMs — fine-tuning and distillation (instruction tuning, DPO, LoRA, QLoRA, and a
+               Sarvam-M → Qwen-14B → 3B chain), a hierarchical graph RAG for financial documents, and a retrieval
+               redesign that took Success@10 from 35% to 85%.</p>
+            <p>The part that mattered to me was that the earlier work came back. The multimodal RAG package I built
+               needed table, chart and image extraction — the same computer vision problem as Charto, now serving as
+               an input stage for a language model instead of an end in itself. Audio returned the same way: a custom
+               TTS voice served on a vLLM-Omni fork, with ASR wired in behind a voice interface.</p>
+
+            <h4>Agents &middot; 2026</h4>
+            <p>Now I build the agentic layer of an AI wealth advisor — multi-agent orchestration, routing, evaluation
+               harnesses, and grounding answers in a user's actual portfolio. It is the first work where the output is
+               an action rather than a string, even if the actions are still tool calls rather than motion. Alongside
+               it I research Mixture-of-Experts architectures: ExpertAttention is about the fact that a router commits
+               to how it will combine expert outputs before any expert has run.</p>
+
+            <h4>Where this is going</h4>
+            <p>The system I want to work on holds every modality at once — vision, audio, language and state as
+               input, actions as output, with a learned model of how the world responds. That is what world models
+               and robot policies are.</p>
+            <p class="aside">I am not there yet, and I would rather say so plainly. The closest I have come is
+               RL-guided pose refinement in DI-GNN and a DQN policy in KrishiGyaan, both small and both in
+               simulation. What I do have is the pieces — perception, speech, language, and now action selection —
+               and a clear enough view of the gap to know what to build next.</p>
+          </template>
         </div>
         <nav class="links">
           <a href="mailto:s.abhaysastha@gmail.com">email</a>
@@ -353,6 +475,7 @@
       <div class="tabbar" role="tablist">
         <button class="tab on" role="tab" aria-selected="true"  onclick="route(event,'research')">Research</button>
         <button class="tab"    role="tab" aria-selected="false" onclick="route(event,'projects')">Projects</button>
+        <button class="tab"    role="tab" aria-selected="false" onclick="route(event,'clauding')">Clauding</button>
         <button class="tab"    role="tab" aria-selected="false" onclick="route(event,'experience')">Experience</button>
         <button class="tab"    role="tab" aria-selected="false" onclick="route(event,'education')">Education</button>
       </div>
@@ -378,30 +501,10 @@
               <h3>ExpertAttention: Output-Conditioned Aggregation for Mixture-of-Experts Transformers</h3>
               <p class="byline"><span class="me">Abhay Sastha S</span></p>
               <p class="meta"><span class="venue">Work in progress</span> &nbsp;·&nbsp; 2026</p>
-              <p class="body">
-                Sparse MoE transformers compute aggregation weights from the input <em>before any expert runs</em>,
-                conflating two distinct decisions: which experts to activate, and how to combine what they produce.
-                ExpertAttention (EA) leaves routing untouched and replaces the fixed weighted sum with a lightweight
-                attention over actual expert outputs — Q = W<sub>q</sub>·x, K = RMSNorm(W<sub>k</sub>·E),
-                V = W<sub>v</sub>·E — at under 0.003% compute overhead.
-              </p>
-              <p class="body">
-                At 84M parameters (k=2, 30K steps, C4) the work establishes three things.
-                <strong>A cold-start failure:</strong> introducing EA from step 0 prevents expert specialisation
-                entirely — router entropy froze at its 0.692 maximum against the baseline's healthy 0.637 → 0.501 curve,
-                and the validation perplexity gap widened monotonically to +68%.
-                <strong>A fix:</strong> a scheduled residual ramp — freeze to 10K, then λ decaying 1 → 0 over 8K steps,
-                timed off the baseline's own specialisation transition — reaches val PPL 275.9 against 301.9 for the
-                baseline and 323.8 for a hard switch. Linear and cosine ramps are indistinguishable, so the existence of
-                a ramp matters and its shape does not.
-                <strong>An independent signal:</strong> EA–router correlation traces an arc of −0.38 → 0.0 → +0.52, a
-                learned policy the input-only router cannot express.
-              </p>
-              <p class="body">
-                Next: integrating Expert Divergence Learning — EDL forces expert diversity, EA exploits it at
-                aggregation time — and scaling to ≥1B active parameters on SlimPajama with downstream evaluation.
-              </p>
-              <p class="refs"><a href="assets/proposal_msr.pdf">proposal</a></p>
+              <p class="body">An MoE router computes aggregation weights from the input <em>before any expert has run</em>, conflating which experts to activate with how to combine what they produce. ExpertAttention leaves routing untouched and replaces the fixed weighted sum with attention over the actual expert outputs, at under 0.003% compute overhead.</p>
+              <p class="refs">
+                <button class="more" onclick="openMore('ea')">read more</button>
+                <a href="assets/proposal_msr.pdf">proposal</a></p>
               <div class="tags">
                 <span class="tag">Mixture-of-Experts</span>
                 <span class="tag">LLM Pretraining</span>
@@ -437,6 +540,30 @@
               </svg>
               <figcaption>α from outputs, not input</figcaption>
             </figure>
+              <template id="full-ea" data-title="ExpertAttention: Output-Conditioned Aggregation for Mixture-of-Experts Transformers">
+                <p class="body">
+                Sparse MoE transformers compute aggregation weights from the input <em>before any expert runs</em>,
+                conflating two distinct decisions: which experts to activate, and how to combine what they produce.
+                ExpertAttention (EA) leaves routing untouched and replaces the fixed weighted sum with a lightweight
+                attention over actual expert outputs — Q = W<sub>q</sub>·x, K = RMSNorm(W<sub>k</sub>·E),
+                V = W<sub>v</sub>·E — at under 0.003% compute overhead.
+              </p>
+                <p class="body">
+                At 84M parameters (k=2, 30K steps, C4) the work establishes three things.
+                <strong>A cold-start failure:</strong> introducing EA from step 0 prevents expert specialisation
+                entirely — router entropy froze at its 0.692 maximum against the baseline's healthy 0.637 → 0.501 curve,
+                and the validation perplexity gap widened monotonically to +68%.
+                <strong>A fix:</strong> a scheduled residual ramp — freeze to 10K, then λ decaying 1 → 0 over 8K steps,
+                timed off the baseline's own specialisation transition — reaches val PPL 275.9 against 301.9 for the
+                baseline and 323.8 for a hard switch. Linear and cosine ramps are indistinguishable, so the existence of
+                a ramp matters and its shape does not.
+                <strong>An independent signal:</strong> EA–router correlation traces an arc of −0.38 → 0.0 → +0.52, a
+                learned policy the input-only router cannot express.
+              </p>
+                <p class="body">
+                Next: integrating Expert Divergence Learning — EDL forces expert diversity, EA exploits it at
+                aggregation time — and scaling to ≥1B active parameters on SlimPajama with downstream evaluation.
+              </p></template>
           </div>
         </article>
       </div>
@@ -449,12 +576,9 @@
               <h3><a href="https://doi.org/10.1007/s12065-025-01119-6">A hybrid whale–ant lion optimization algorithm with random opposition-based strategy for multilevel image thresholding</a></h3>
               <p class="byline"><span class="me">S. Abhay Sastha</span>, Manish Mahato, Sarada Mohapatra, Subhabrata Rath, Prabhujit Mohapatra</p>
               <p class="meta"><span class="venue">Evolutionary Intelligence 19(1)</span> &nbsp;·&nbsp; Springer Nature &nbsp;·&nbsp; 2026</p>
-              <p class="body">
-                A hybrid metaheuristic combining whale optimization with ant lion optimization under a random
-                opposition-based learning strategy, applied to multilevel image thresholding. Carried out at the
-                VIT Vellore SAS Lab under Prof. Prabhujit Mohapatra.
-              </p>
+              <p class="body">A hybrid metaheuristic combining whale optimization with ant lion optimization under a random opposition-based strategy, applied to multilevel image thresholding.</p>
               <p class="refs">
+                <button class="more" onclick="openMore('walo')">read more</button>
                 <a href="https://doi.org/10.1007/s12065-025-01119-6">paper</a>
                 <a href="https://scholar.google.com/citations?user=QTYlmK0AAAAJ&hl=en">scholar</a>
               </p>
@@ -484,6 +608,12 @@
               </svg>
               <figcaption>multilevel thresholds</figcaption>
             </figure>
+              <template id="full-walo" data-title="A hybrid whale–ant lion optimization algorithm for multilevel image thresholding">
+                <p class="body">
+                A hybrid metaheuristic combining whale optimization with ant lion optimization under a random
+                opposition-based learning strategy, applied to multilevel image thresholding. Carried out at the
+                VIT Vellore SAS Lab under Prof. Prabhujit Mohapatra.
+              </p></template>
           </div>
         </article>
       </div>
@@ -538,13 +668,9 @@
               <h3>OMNIFLUX: A Pluggable End-to-End Multimodal RAG Pipeline</h3>
               <p class="byline"><span class="me">Abhay Sastha S</span></p>
               <p class="meta"><span class="venue">Poster, IndoML 2025</span> &nbsp;·&nbsp; BITS Hyderabad</p>
-              <p class="body">
-                A configurable five-stage ingestion pipeline — loading, extraction, embedding, vectorstore upsert,
-                cleanup — that pulls text, tables, charts, and images out of PDFs and CSVs, generates meta-questions to
-                improve retrieval, and upserts enriched chunks into Elasticsearch. Every stage is swappable from a YAML
-                config, and the same pipeline is exposed over a CLI, a REST API, and a Gradio UI.
-              </p>
+              <p class="body">A configurable five-stage pipeline that pulls text, tables, charts and images out of PDFs and CSVs, generates meta-questions to improve retrieval, and upserts enriched chunks into a vector store.</p>
               <p class="refs">
+                <button class="more" onclick="openMore('omni')">read more</button>
                 <a href="https://www.linkedin.com/posts/abhay-sastha-s_hi-ill-be-presenting-our-poster-omniflux-activity-7407747564621488129-0MxN">poster</a>
               </p>
               <div class="tags">
@@ -586,6 +712,13 @@
               </svg>
               <figcaption>five-stage ingestion</figcaption>
             </figure>
+              <template id="full-omni" data-title="OMNIFLUX: A Pluggable End-to-End Multimodal RAG Pipeline">
+                <p class="body">
+                A configurable five-stage ingestion pipeline — loading, extraction, embedding, vectorstore upsert,
+                cleanup — that pulls text, tables, charts, and images out of PDFs and CSVs, generates meta-questions to
+                improve retrieval, and upserts enriched chunks into Elasticsearch. Every stage is swappable from a YAML
+                config, and the same pipeline is exposed over a CLI, a REST API, and a Gradio UI.
+              </p></template>
           </div>
         </article>
       </div>
@@ -598,23 +731,107 @@
         <div class="layer">
           <h2>Projects</h2>
           <p class="note">
-            Model serving, computer vision, graph learning, reinforcement learning, and retrieval.
+            Grouped the way the work actually went — perception first, then language, then choosing actions.
           </p>
         </div>
       </div>
 
-      <!-- Qwen3-TTS -->
+      <div class="row">
+        <div class="group">
+          <p class="group-lbl">Perception and speech</p>
+          <p class="group-note">Getting signal out of images, video and audio.</p>
+        </div>
+      </div>
+
+      <div class="row">
+        <article class="blk">
+          <div class="blk-in">
+            <div>
+              <h3><a href="https://github.com/Abhay-Sastha-S/charto">Charto — Structured Data Extraction from Chart Images</a></h3>
+              <p class="body">Recovers JSON values for unlabelled data points in bar, line and scatter charts, reaching 80–85% accuracy — comparable to methods like LlamaParse.</p>
+              <p class="refs">
+                <button class="more" onclick="openMore('charto')">read more</button>
+                <a href="https://github.com/Abhay-Sastha-S/charto">code</a></p>
+              <div class="tags"><span class="tag">Computer Vision</span><span class="tag">Object Detection</span><span class="tag">OCR</span></div>
+            </div>
+            <figure class="plate">
+              <svg viewBox="0 0 260 150" role="img" aria-label="Bar chart with detection boxes emitting JSON">
+                <g fill="#1A1815" opacity="0.16">
+                  <rect x="34" y="72" width="24" height="54"/><rect x="72" y="42" width="24" height="84"/>
+                  <rect x="110" y="88" width="24" height="38"/><rect x="148" y="58" width="24" height="68"/>
+                </g>
+                <g fill="none" stroke="#9C4221" stroke-width="1.1" stroke-dasharray="3 2.5">
+                  <rect x="31" y="69" width="30" height="60"/><rect x="69" y="39" width="30" height="90"/>
+                  <rect x="107" y="85" width="30" height="44"/><rect x="145" y="55" width="30" height="74"/>
+                </g>
+                <line x1="24" y1="129" x2="186" y2="129" stroke="#1A1815" stroke-width="1.1"/>
+                <line x1="24" y1="22" x2="24" y2="129" stroke="#1A1815" stroke-width="1.1"/>
+                <g fill="#1A1815" font-family="'JetBrains Mono',monospace" font-size="9" opacity="0.75">
+                  <text x="198" y="58">{</text><text x="204" y="72">"x":…</text>
+                  <text x="204" y="86">"y":…</text><text x="198" y="100">}</text>
+                </g>
+              </svg>
+              <figcaption>chart → json</figcaption>
+            </figure>
+              <template id="full-charto" data-title="Charto — Structured Data Extraction from Chart Images">
+                <p class="body">
+                An end-to-end pipeline that recovers JSON values for unlabelled data points in bar, line, and scatter
+                charts. I ported the original Caffe2 model to a manual PyTorch Detectron2 implementation of Faster R-CNN
+                with FPN, trained on PlotQA, and lifted accuracy further with systematic detection and PyOCR-based
+                extraction — reaching 80–85%, comparable to SOTA methods such as LlamaParse.
+              </p></template>
+          </div>
+        </article>
+      </div>
+      <div class="row">
+        <article class="blk">
+          <div class="blk-in">
+            <div>
+              <h3><a href="https://github.com/Abhay-Sastha-S/Trackem">Trackem — Cross-Camera Multi-Feed Human Tracking</a></h3>
+              <p class="body">Cross-camera human tracking on YOLO detection plus Re-ID embeddings, CUDA-tuned to hold several simultaneous feeds in real time.</p>
+              <p class="refs">
+                <button class="more" onclick="openMore('trackem')">read more</button>
+                <a href="https://github.com/Abhay-Sastha-S/Trackem">code</a></p>
+              <div class="tags"><span class="tag">Re-Identification</span><span class="tag">YOLO</span><span class="tag">CUDA</span></div>
+            </div>
+            <figure class="plate">
+              <svg viewBox="0 0 260 150" role="img" aria-label="One identity matched across three camera feeds">
+                <g fill="none" stroke="#1A1815" stroke-width="0.9" opacity="0.35">
+                  <rect x="16" y="26" width="72" height="98" rx="2"/>
+                  <rect x="94" y="26" width="72" height="98" rx="2"/>
+                  <rect x="172" y="26" width="72" height="98" rx="2"/>
+                </g>
+                <g fill="none" stroke="#9C4221" stroke-width="1.3">
+                  <rect x="36" y="56" width="26" height="50" rx="2"/>
+                  <rect x="118" y="66" width="26" height="50" rx="2"/>
+                  <rect x="192" y="50" width="26" height="50" rx="2"/>
+                </g>
+                <g fill="#9C4221" font-family="'JetBrains Mono',monospace" font-size="8" text-anchor="middle">
+                  <text x="49" y="50">id 7</text><text x="131" y="60">id 7</text><text x="205" y="44">id 7</text>
+                </g>
+                <g stroke="#1A1815" stroke-width="1" stroke-dasharray="3 3" opacity="0.6">
+                  <path d="M62 82 L118 92"/><path d="M144 92 L192 76"/>
+                </g>
+              </svg>
+              <figcaption>identity across feeds</figcaption>
+            </figure>
+              <template id="full-trackem" data-title="Trackem — Cross-Camera Multi-Feed Human Tracking">
+                <p class="body">
+                A cross-camera, multi-feed human tracking system built on YOLO detection and Re-ID embeddings, with
+                CUDA-targeted optimizations to keep multiple simultaneous feeds real time.
+              </p></template>
+          </div>
+        </article>
+      </div>
       <div class="row">
         <article class="blk">
           <div class="blk-in">
             <div>
               <h3><a href="https://github.com/Abhay-Sastha-S/Qwen3-TTS-myfi">Qwen3-TTS-myfi — High-Concurrency Async TTS Serving</a></h3>
-              <p class="body">
-                A high-concurrency async TTS server that serves Qwen3-TTS-12Hz-1.7B-Base with pre-computed speaker
-                embeddings on a custom vLLM-Omni fork, tuned for latency under concurrent load. Shipped alongside the
-                frontend, backend, and ASR integration for MyFi's voice interface.
-              </p>
-              <p class="refs"><a href="https://github.com/Abhay-Sastha-S/Qwen3-TTS-myfi">code</a></p>
+              <p class="body">A high-concurrency async TTS server running Qwen3-TTS-1.7B on a custom vLLM-Omni fork, tuned for latency under concurrent load. Shipped with the ASR integration behind MyFi's voice interface.</p>
+              <p class="refs">
+                <button class="more" onclick="openMore('tts')">read more</button>
+                <a href="https://github.com/Abhay-Sastha-S/Qwen3-TTS-myfi">code</a></p>
               <div class="tags"><span class="tag">TTS</span><span class="tag">vLLM</span><span class="tag">Inference Serving</span></div>
             </div>
             <figure class="plate">
@@ -637,141 +854,32 @@
               </svg>
               <figcaption>streamed synthesis</figcaption>
             </figure>
+              <template id="full-tts" data-title="Qwen3-TTS-myfi — High-Concurrency Async TTS Serving">
+                <p class="body">
+                A high-concurrency async TTS server that serves Qwen3-TTS-12Hz-1.7B-Base with pre-computed speaker
+                embeddings on a custom vLLM-Omni fork, tuned for latency under concurrent load. Shipped alongside the
+                frontend, backend, and ASR integration for MyFi's voice interface.
+              </p></template>
           </div>
         </article>
       </div>
 
-      <!-- Charto -->
       <div class="row">
-        <article class="blk">
-          <div class="blk-in">
-            <div>
-              <h3><a href="https://github.com/Abhay-Sastha-S/charto">Charto — Structured Data Extraction from Chart Images</a></h3>
-              <p class="body">
-                An end-to-end pipeline that recovers JSON values for unlabelled data points in bar, line, and scatter
-                charts. I ported the original Caffe2 model to a manual PyTorch Detectron2 implementation of Faster R-CNN
-                with FPN, trained on PlotQA, and lifted accuracy further with systematic detection and PyOCR-based
-                extraction — reaching 80–85%, comparable to SOTA methods such as LlamaParse.
-              </p>
-              <p class="refs"><a href="https://github.com/Abhay-Sastha-S/charto">code</a></p>
-              <div class="tags"><span class="tag">Computer Vision</span><span class="tag">Object Detection</span><span class="tag">OCR</span></div>
-            </div>
-            <figure class="plate">
-              <svg viewBox="0 0 260 150" role="img" aria-label="Bar chart with detection boxes emitting JSON">
-                <g fill="#1A1815" opacity="0.16">
-                  <rect x="34" y="72" width="24" height="54"/><rect x="72" y="42" width="24" height="84"/>
-                  <rect x="110" y="88" width="24" height="38"/><rect x="148" y="58" width="24" height="68"/>
-                </g>
-                <g fill="none" stroke="#9C4221" stroke-width="1.1" stroke-dasharray="3 2.5">
-                  <rect x="31" y="69" width="30" height="60"/><rect x="69" y="39" width="30" height="90"/>
-                  <rect x="107" y="85" width="30" height="44"/><rect x="145" y="55" width="30" height="74"/>
-                </g>
-                <line x1="24" y1="129" x2="186" y2="129" stroke="#1A1815" stroke-width="1.1"/>
-                <line x1="24" y1="22" x2="24" y2="129" stroke="#1A1815" stroke-width="1.1"/>
-                <g fill="#1A1815" font-family="'JetBrains Mono',monospace" font-size="9" opacity="0.75">
-                  <text x="198" y="58">{</text><text x="204" y="72">"x":…</text>
-                  <text x="204" y="86">"y":…</text><text x="198" y="100">}</text>
-                </g>
-              </svg>
-              <figcaption>chart → json</figcaption>
-            </figure>
-          </div>
-        </article>
+        <div class="group">
+          <p class="group-lbl">Language and retrieval</p>
+          <p class="group-note">Making that signal usable by a language model, and keeping it grounded.</p>
+        </div>
       </div>
 
-      <!-- DI-GNN -->
-      <div class="row">
-        <article class="blk">
-          <div class="blk-in">
-            <div>
-              <h3><a href="https://github.com/Abhay-Sastha-S/GNN-PL-Docking/">DI-GNN — Dynamic Interaction Graphs for Protein–Ligand Docking</a></h3>
-              <p class="body">
-                After implementing SOTA methods such as MedusaGraph and EquiBind to understand where existing GNN
-                docking approaches break down, I designed and built a proof of concept for DI-GNN: an approach that
-                integrates dynamic interaction graphs with RL-guided pose refinement and physics-informed models,
-                aiming at more accurate and generalizable docking for drug discovery.
-              </p>
-              <p class="refs"><a href="https://github.com/Abhay-Sastha-S/GNN-PL-Docking/">code</a></p>
-              <div class="tags"><span class="tag">Graph Neural Networks</span><span class="tag">Reinforcement Learning</span><span class="tag">Drug Discovery</span></div>
-            </div>
-            <figure class="plate">
-              <svg viewBox="0 0 260 150" role="img" aria-label="Protein and ligand nodes joined by dynamic interaction edges">
-                <g stroke="#1A1815" stroke-width="1.1" opacity="0.5">
-                  <line x1="52" y1="42" x2="96" y2="30"/><line x1="96" y1="30" x2="134" y2="60"/>
-                  <line x1="134" y1="60" x2="104" y2="98"/><line x1="104" y1="98" x2="58" y2="86"/>
-                  <line x1="58" y1="86" x2="52" y2="42"/>
-                </g>
-                <g stroke="#9C4221" stroke-width="1.1" stroke-dasharray="3.5 3">
-                  <line x1="96" y1="30" x2="182" y2="48"/><line x1="104" y1="98" x2="152" y2="114"/>
-                </g>
-                <g stroke="#1A1815" stroke-width="1.1" opacity="0.5">
-                  <line x1="182" y1="48" x2="196" y2="96"/><line x1="196" y1="96" x2="152" y2="114"/>
-                </g>
-                <g fill="#1A1815">
-                  <circle cx="52" cy="42" r="5"/><circle cx="96" cy="30" r="5"/><circle cx="134" cy="60" r="6.5"/>
-                  <circle cx="104" cy="98" r="5"/><circle cx="58" cy="86" r="5"/>
-                </g>
-                <g fill="#F2ECE2" stroke="#9C4221" stroke-width="1.6">
-                  <circle cx="182" cy="48" r="6"/><circle cx="196" cy="96" r="6"/><circle cx="152" cy="114" r="6"/>
-                </g>
-              </svg>
-              <figcaption>dynamic interaction edges</figcaption>
-            </figure>
-          </div>
-        </article>
-      </div>
-
-      <!-- GRPO -->
-      <div class="row">
-        <article class="blk">
-          <div class="blk-in">
-            <div>
-              <h3><a href="https://github.com/Abhay-Sastha-S/jpgs-crypto">XML-CoT GRPO — RL Fine-Tuning for Structured Reasoning</a></h3>
-              <p class="body">
-                Fine-tuned Qwen2.5-3B-Instruct with a GRPO-based reinforcement learning framework, using custom reward
-                functions that enforce both numerical accuracy and strict output formatting on GSM8K. Integrated LoRA
-                adapters with Unsloth's FastLanguageModel and vLLM for efficient inference.
-              </p>
-              <p class="refs"><a href="https://github.com/Abhay-Sastha-S/jpgs-crypto">code</a></p>
-              <div class="tags"><span class="tag">GRPO</span><span class="tag">LoRA</span><span class="tag">Reasoning</span></div>
-            </div>
-            <figure class="plate">
-              <svg viewBox="0 0 260 150" role="img" aria-label="Reward curve above a chain of reasoning steps">
-                <path d="M24 86 C 76 82, 108 56, 156 44 S 226 28, 240 25" fill="none" stroke="#9C4221" stroke-width="1.6"/>
-                <g fill="#9C4221">
-                  <circle cx="24" cy="86" r="2.8"/><circle cx="156" cy="44" r="2.8"/><circle cx="240" cy="25" r="2.8"/>
-                </g>
-                <text x="24" y="18" fill="#1A1815" font-family="'JetBrains Mono',monospace" font-size="9" opacity="0.7">reward</text>
-                <g stroke="#1A1815" stroke-width="1" opacity="0.4">
-                  <line x1="52" y1="122" x2="82" y2="122"/><line x1="110" y1="122" x2="140" y2="122"/>
-                  <line x1="168" y1="122" x2="198" y2="122"/>
-                </g>
-                <g fill="none" stroke="#1A1815" stroke-width="1.1">
-                  <rect x="26" y="110" width="26" height="24" rx="2"/>
-                  <rect x="82" y="110" width="26" height="24" rx="2"/>
-                  <rect x="140" y="110" width="26" height="24" rx="2"/>
-                  <rect x="198" y="110" width="26" height="24" rx="2"/>
-                </g>
-              </svg>
-              <figcaption>reward-shaped chain</figcaption>
-            </figure>
-          </div>
-        </article>
-      </div>
-
-      <!-- Coeus -->
       <div class="row">
         <article class="blk">
           <div class="blk-in">
             <div>
               <h3><a href="https://github.com/Abhay-Sastha-S/Coeus">Coeus — Natural Language to SQL over Vector + Graph RAG</a></h3>
-              <p class="body">
-                A natural-language-to-SQL workflow built on a combined vector and graph RAG system. It fetches the
-                database schema, attaches context to tables and columns, maps their relationships into a Neo4j graph,
-                and resolves user queries through sentence transformers — targeting the hallucination, token-limit,
-                data-privacy, and user-intent failures that plague naive text-to-SQL.
-              </p>
-              <p class="refs"><a href="https://github.com/Abhay-Sastha-S/Coeus">code</a></p>
+              <p class="body">Natural language to SQL over a combined vector and graph RAG system, using a Neo4j map of the schema to curb hallucination and keep prompts inside the token budget.</p>
+              <p class="refs">
+                <button class="more" onclick="openMore('coeus')">read more</button>
+                <a href="https://github.com/Abhay-Sastha-S/Coeus">code</a></p>
               <div class="tags"><span class="tag">Graph RAG</span><span class="tag">Neo4j</span><span class="tag">Text-to-SQL</span></div>
             </div>
             <figure class="plate">
@@ -797,60 +905,117 @@
               </svg>
               <figcaption>schema → graph → sql</figcaption>
             </figure>
+              <template id="full-coeus" data-title="Coeus — Natural Language to SQL over Vector + Graph RAG">
+                <p class="body">
+                A natural-language-to-SQL workflow built on a combined vector and graph RAG system. It fetches the
+                database schema, attaches context to tables and columns, maps their relationships into a Neo4j graph,
+                and resolves user queries through sentence transformers — targeting the hallucination, token-limit,
+                data-privacy, and user-intent failures that plague naive text-to-SQL.
+              </p></template>
           </div>
         </article>
       </div>
-
-      <!-- Trackem -->
       <div class="row">
         <article class="blk">
           <div class="blk-in">
             <div>
-              <h3><a href="https://github.com/Abhay-Sastha-S/Trackem">Trackem — Cross-Camera Multi-Feed Human Tracking</a></h3>
-              <p class="body">
-                A cross-camera, multi-feed human tracking system built on YOLO detection and Re-ID embeddings, with
-                CUDA-targeted optimizations to keep multiple simultaneous feeds real time.
-              </p>
-              <p class="refs"><a href="https://github.com/Abhay-Sastha-S/Trackem">code</a></p>
-              <div class="tags"><span class="tag">Re-Identification</span><span class="tag">YOLO</span><span class="tag">CUDA</span></div>
+              <h3><a href="https://github.com/Abhay-Sastha-S/jpgs-crypto">XML-CoT GRPO — RL Fine-Tuning for Structured Reasoning</a></h3>
+              <p class="body">Qwen2.5-3B fine-tuned with GRPO and custom reward functions that enforce numerical accuracy and strict output formatting on GSM8K.</p>
+              <p class="refs">
+                <button class="more" onclick="openMore('grpo')">read more</button>
+                <a href="https://github.com/Abhay-Sastha-S/jpgs-crypto">code</a></p>
+              <div class="tags"><span class="tag">GRPO</span><span class="tag">LoRA</span><span class="tag">Reasoning</span></div>
             </div>
             <figure class="plate">
-              <svg viewBox="0 0 260 150" role="img" aria-label="One identity matched across three camera feeds">
-                <g fill="none" stroke="#1A1815" stroke-width="0.9" opacity="0.35">
-                  <rect x="16" y="26" width="72" height="98" rx="2"/>
-                  <rect x="94" y="26" width="72" height="98" rx="2"/>
-                  <rect x="172" y="26" width="72" height="98" rx="2"/>
+              <svg viewBox="0 0 260 150" role="img" aria-label="Reward curve above a chain of reasoning steps">
+                <path d="M24 86 C 76 82, 108 56, 156 44 S 226 28, 240 25" fill="none" stroke="#9C4221" stroke-width="1.6"/>
+                <g fill="#9C4221">
+                  <circle cx="24" cy="86" r="2.8"/><circle cx="156" cy="44" r="2.8"/><circle cx="240" cy="25" r="2.8"/>
                 </g>
-                <g fill="none" stroke="#9C4221" stroke-width="1.3">
-                  <rect x="36" y="56" width="26" height="50" rx="2"/>
-                  <rect x="118" y="66" width="26" height="50" rx="2"/>
-                  <rect x="192" y="50" width="26" height="50" rx="2"/>
+                <text x="24" y="18" fill="#1A1815" font-family="'JetBrains Mono',monospace" font-size="9" opacity="0.7">reward</text>
+                <g stroke="#1A1815" stroke-width="1" opacity="0.4">
+                  <line x1="52" y1="122" x2="82" y2="122"/><line x1="110" y1="122" x2="140" y2="122"/>
+                  <line x1="168" y1="122" x2="198" y2="122"/>
                 </g>
-                <g fill="#9C4221" font-family="'JetBrains Mono',monospace" font-size="8" text-anchor="middle">
-                  <text x="49" y="50">id 7</text><text x="131" y="60">id 7</text><text x="205" y="44">id 7</text>
-                </g>
-                <g stroke="#1A1815" stroke-width="1" stroke-dasharray="3 3" opacity="0.6">
-                  <path d="M62 82 L118 92"/><path d="M144 92 L192 76"/>
+                <g fill="none" stroke="#1A1815" stroke-width="1.1">
+                  <rect x="26" y="110" width="26" height="24" rx="2"/>
+                  <rect x="82" y="110" width="26" height="24" rx="2"/>
+                  <rect x="140" y="110" width="26" height="24" rx="2"/>
+                  <rect x="198" y="110" width="26" height="24" rx="2"/>
                 </g>
               </svg>
-              <figcaption>identity across feeds</figcaption>
+              <figcaption>reward-shaped chain</figcaption>
             </figure>
+              <template id="full-grpo" data-title="XML-CoT GRPO — RL Fine-Tuning for Structured Reasoning">
+                <p class="body">
+                Fine-tuned Qwen2.5-3B-Instruct with a GRPO-based reinforcement learning framework, using custom reward
+                functions that enforce both numerical accuracy and strict output formatting on GSM8K. Integrated LoRA
+                adapters with Unsloth's FastLanguageModel and vLLM for efficient inference.
+              </p></template>
           </div>
         </article>
       </div>
 
-      <!-- KrishiGyaan -->
+      <div class="row">
+        <div class="group">
+          <p class="group-lbl">Decision and control</p>
+          <p class="group-note">Choosing actions rather than producing text — policies judged on outcomes.</p>
+        </div>
+      </div>
+
+      <div class="row">
+        <article class="blk">
+          <div class="blk-in">
+            <div>
+              <h3><a href="https://github.com/Abhay-Sastha-S/GNN-PL-Docking/">DI-GNN — Dynamic Interaction Graphs for Protein–Ligand Docking</a></h3>
+              <p class="body">A proof of concept for protein–ligand docking that pairs dynamic interaction graphs with RL-guided pose refinement — a policy choosing how to move a molecule, not just a scoring function.</p>
+              <p class="refs">
+                <button class="more" onclick="openMore('digmn')">read more</button>
+                <a href="https://github.com/Abhay-Sastha-S/GNN-PL-Docking/">code</a></p>
+              <div class="tags"><span class="tag">Graph Neural Networks</span><span class="tag">Reinforcement Learning</span><span class="tag">Drug Discovery</span></div>
+            </div>
+            <figure class="plate">
+              <svg viewBox="0 0 260 150" role="img" aria-label="Protein and ligand nodes joined by dynamic interaction edges">
+                <g stroke="#1A1815" stroke-width="1.1" opacity="0.5">
+                  <line x1="52" y1="42" x2="96" y2="30"/><line x1="96" y1="30" x2="134" y2="60"/>
+                  <line x1="134" y1="60" x2="104" y2="98"/><line x1="104" y1="98" x2="58" y2="86"/>
+                  <line x1="58" y1="86" x2="52" y2="42"/>
+                </g>
+                <g stroke="#9C4221" stroke-width="1.1" stroke-dasharray="3.5 3">
+                  <line x1="96" y1="30" x2="182" y2="48"/><line x1="104" y1="98" x2="152" y2="114"/>
+                </g>
+                <g stroke="#1A1815" stroke-width="1.1" opacity="0.5">
+                  <line x1="182" y1="48" x2="196" y2="96"/><line x1="196" y1="96" x2="152" y2="114"/>
+                </g>
+                <g fill="#1A1815">
+                  <circle cx="52" cy="42" r="5"/><circle cx="96" cy="30" r="5"/><circle cx="134" cy="60" r="6.5"/>
+                  <circle cx="104" cy="98" r="5"/><circle cx="58" cy="86" r="5"/>
+                </g>
+                <g fill="#F2ECE2" stroke="#9C4221" stroke-width="1.6">
+                  <circle cx="182" cy="48" r="6"/><circle cx="196" cy="96" r="6"/><circle cx="152" cy="114" r="6"/>
+                </g>
+              </svg>
+              <figcaption>dynamic interaction edges</figcaption>
+            </figure>
+              <template id="full-digmn" data-title="DI-GNN — Dynamic Interaction Graphs for Protein–Ligand Docking">
+                <p class="body">
+                After implementing SOTA methods such as MedusaGraph and EquiBind to understand where existing GNN
+                docking approaches break down, I designed and built a proof of concept for DI-GNN: an approach that
+                integrates dynamic interaction graphs with RL-guided pose refinement and physics-informed models,
+                aiming at more accurate and generalizable docking for drug discovery.
+              </p></template>
+          </div>
+        </article>
+      </div>
       <div class="row">
         <article class="blk">
           <div class="blk-in">
             <div>
               <h3><a href="https://github.com/Abhay-Sastha-S/KrishiGyaan">KrishiGyaan — Crop Rotation Recommendation with Deep RL</a></h3>
-              <p class="body">
-                A crop rotation recommendation system driven by a DQN agent trained on real-world parameters — soil
-                nutrient levels, moisture, soil type, and more — to suggest rotations that sustain yield without
-                depleting the soil.
-              </p>
-              <p class="refs"><a href="https://github.com/Abhay-Sastha-S/KrishiGyaan">code</a></p>
+              <p class="body">A DQN agent that recommends crop rotations from soil nutrients, moisture and soil type — sequential decisions judged on long-run soil health rather than one-shot yield.</p>
+              <p class="refs">
+                <button class="more" onclick="openMore('krishi')">read more</button>
+                <a href="https://github.com/Abhay-Sastha-S/KrishiGyaan">code</a></p>
               <div class="tags"><span class="tag">Deep RL</span><span class="tag">DQN</span><span class="tag">Agriculture</span></div>
             </div>
             <figure class="plate">
@@ -867,11 +1032,16 @@
               </svg>
               <figcaption>rotation policy</figcaption>
             </figure>
+              <template id="full-krishi" data-title="KrishiGyaan — Crop Rotation Recommendation with Deep RL">
+                <p class="body">
+                A crop rotation recommendation system driven by a DQN agent trained on real-world parameters — soil
+                nutrient levels, moisture, soil type, and more — to suggest rotations that sustain yield without
+                depleting the soil.
+              </p></template>
           </div>
         </article>
       </div>
 
-      <!-- Other -->
       <div class="row">
         <article class="blk">
           <div>
@@ -885,6 +1055,233 @@
               <li style="margin-bottom:5px;"><a href="https://github.com/Abhay-Sastha-S/MailSend">MailSend</a> — low-cost personalized bulk email, aimed at MSMEs.</li>
               <li><a href="https://github.com/Abhay-Sastha-S/tds-p2">tds-p2</a> — an LLM-driven pipeline that analyzes and summarizes arbitrary CSV files.</li>
             </ul>
+          </div>
+        </article>
+      </div>
+    </div>
+
+    <!-- ======================= CLAUDING ======================= -->
+    <div id="clauding" class="panel" role="tabpanel">
+
+      <div class="row">
+        <div class="layer">
+          <h2>Clauding</h2>
+          <p class="note">
+            Tools I built for my own Claude Code workflow, then cleaned up and released. Both are local,
+            dependency-free, and solve something that was annoying me daily.
+          </p>
+        </div>
+      </div>
+
+      <div class="row">
+        <article class="blk">
+          <div class="blk-in">
+            <div>
+              <h3><a href="https://github.com/Abhay-Sastha-S/claude-agent-dashboard">Claude Agent Dashboard</a></h3>
+              <p class="meta"><span class="venue">Claude Code plugin</span> &nbsp;·&nbsp; Node, zero dependencies</p>
+              <p class="body">
+                A local command center for running, watching, and talking to many Claude Code sessions at once —
+                as a grid of live tiles at <code>localhost:4747</code>. One session per terminal tab stops working
+                the moment you are doing more than one thing.
+              </p>
+              <p class="refs">
+                <button class="more" onclick="openMore('dash')">read more</button>
+                <a href="https://github.com/Abhay-Sastha-S/claude-agent-dashboard">code</a>
+                <a href="https://abhay-sastha-s.github.io/claude-agent-dashboard/">site</a>
+              </p>
+              <div class="tags">
+                <span class="tag">Claude Code</span>
+                <span class="tag">Multi-Agent</span>
+                <span class="tag">Developer Tools</span>
+              </div>
+
+              <template id="full-dash" data-title="Claude Agent Dashboard">
+                <p>A local command center for running, watching, and talking to many Claude Code sessions at once,
+                   as a grid of live tiles at <code>localhost:4747</code>. Zero dependencies — just Node and the
+                   <code>claude</code> CLI. Nothing leaves the machine.</p>
+
+                <h4>Why it exists</h4>
+                <p>Claude Code is excellent at doing one thing in one terminal. The moment you are doing more than
+                   one thing, the "one session per terminal tab" model quietly stops working:</p>
+                <ul>
+                  <li><strong>You cannot see state.</strong> A tab is either the foreground one or a rectangle you
+                      forgot about. There is no at-a-glance answer to which agent is working, which finished, which
+                      is stuck waiting on you, which errored — you find out by cycling through tabs.</li>
+                  <li><strong>Long tasks are invisible.</strong> A repo-wide refactor, a migration, a test sweep —
+                      these run for many minutes, and the only honest status is buried in scrollback. So you either
+                      babysit one agent or lose track of all of them.</li>
+                  <li><strong>Cost is unattributed.</strong> You learn what a session cost once it ends, per session,
+                      somewhere you have to go and look.</li>
+                  <li><strong>Sessions started elsewhere are orphaned.</strong> A session begun in an IDE or another
+                      terminal is a JSONL file on disk and nothing more. Close that window and you have to remember
+                      its ID and <code>--resume</code> it by hand.</li>
+                  <li><strong>Parallelism is the normal case now.</strong> Subagents, git worktrees, and multiple
+                      repos mean several agents are genuinely in flight at once. The interface never caught up.</li>
+                </ul>
+                <p>Subagents solve fan-out inside one task. This solves the layer above: many independent,
+                   long-lived, human-steerable sessions, all visible at once. The goal is a single screen where
+                   every running agent is a tile you can read at a glance and type into without switching context —
+                   an air traffic control view, not another chat window.</p>
+
+                <h4>Design principles</h4>
+                <ul>
+                  <li><strong>Not a wrapper.</strong> It shells out to the real <code>claude</code> CLI in
+                      stream-json mode, so your settings, MCP servers, hooks, skills, and permissions all apply
+                      unchanged. No proxy, no re-implementation, nothing to keep in sync with upstream.</li>
+                  <li><strong>Same session, never a fork.</strong> Resuming and adopting use <code>--resume</code>
+                      without <code>--fork-session</code>, so the session ID is preserved and the canonical
+                      transcript in <code>~/.claude/projects</code> stays the single source of truth.</li>
+                  <li><strong>Local and boring.</strong> One <code>server.js</code>, one <code>index.html</code>, no
+                      <code>node_modules</code>, no build step, no telemetry, no account. Binds to
+                      <code>127.0.0.1</code>.</li>
+                  <li><strong>Survives itself.</strong> Kill the server and every session is still on disk and still
+                      resumable. The dashboard is disposable; your work is not.</li>
+                </ul>
+              </template>
+            </div>
+
+            <figure class="plate">
+              <svg viewBox="0 0 260 170" role="img" aria-label="Grid of live agent tiles with status indicators">
+                <g fill="none" stroke="#1A1815" stroke-width="1.1">
+                  <rect x="16" y="18" width="72" height="60" rx="2"/>
+                  <rect x="96" y="18" width="72" height="60" rx="2"/>
+                  <rect x="176" y="18" width="68" height="60" rx="2"/>
+                  <rect x="16" y="90" width="72" height="60" rx="2"/>
+                  <rect x="96" y="90" width="72" height="60" rx="2"/>
+                  <rect x="176" y="90" width="68" height="60" rx="2"/>
+                </g>
+                <g>
+                  <circle cx="26" cy="28" r="3.2" fill="#9C4221"/>
+                  <circle cx="106" cy="28" r="3.2" fill="#9C4221"/>
+                  <circle cx="186" cy="28" r="3.2" fill="#1A1815" opacity="0.28"/>
+                  <circle cx="26" cy="100" r="3.2" fill="#1A1815" opacity="0.28"/>
+                  <circle cx="106" cy="100" r="3.2" fill="#9C4221"/>
+                  <circle cx="186" cy="100" r="3.2" fill="#1A1815" opacity="0.28"/>
+                </g>
+                <g fill="#1A1815" opacity="0.22">
+                  <rect x="26" y="40" width="46" height="3.4" rx="1.7"/><rect x="26" y="49" width="34" height="3.4" rx="1.7"/>
+                  <rect x="26" y="58" width="40" height="3.4" rx="1.7"/>
+                  <rect x="106" y="40" width="38" height="3.4" rx="1.7"/><rect x="106" y="49" width="46" height="3.4" rx="1.7"/>
+                  <rect x="106" y="58" width="28" height="3.4" rx="1.7"/>
+                  <rect x="186" y="40" width="42" height="3.4" rx="1.7"/><rect x="186" y="49" width="30" height="3.4" rx="1.7"/>
+                  <rect x="26" y="112" width="40" height="3.4" rx="1.7"/><rect x="26" y="121" width="48" height="3.4" rx="1.7"/>
+                  <rect x="106" y="112" width="34" height="3.4" rx="1.7"/><rect x="106" y="121" width="44" height="3.4" rx="1.7"/>
+                  <rect x="106" y="130" width="26" height="3.4" rx="1.7"/>
+                  <rect x="186" y="112" width="36" height="3.4" rx="1.7"/><rect x="186" y="121" width="24" height="3.4" rx="1.7"/>
+                </g>
+              </svg>
+              <figcaption>agents as live tiles</figcaption>
+            </figure>
+          </div>
+        </article>
+      </div>
+
+      <div class="row">
+        <article class="blk">
+          <div class="blk-in">
+            <div>
+              <h3><a href="https://github.com/Abhay-Sastha-S/rtk-meter">rtk-meter</a></h3>
+              <p class="meta"><span class="venue">tmux pane</span> &nbsp;·&nbsp; Bash, no dependencies</p>
+              <p class="body">
+                A 34-column tmux side pane showing live token savings, Claude session and weekly usage with reset
+                countdowns, and Claude Code status. Three things you keep interrupting yourself to check, moved from
+                something you query to something you glance at.
+              </p>
+              <p class="refs">
+                <button class="more" onclick="openMore('rtk')">read more</button>
+                <a href="https://github.com/Abhay-Sastha-S/rtk-meter">code</a>
+                <a href="https://abhay-sastha-s.github.io/rtk-meter/">site</a>
+              </p>
+              <div class="tags">
+                <span class="tag">tmux</span>
+                <span class="tag">Terminal UI</span>
+                <span class="tag">Observability</span>
+              </div>
+
+              <template id="full-rtk" data-title="rtk-meter">
+                <p>A thin tmux side pane that answers the three questions you keep interrupting yourself to ask
+                   during a long Claude Code session: is the token filtering actually paying off, how much of my
+                   limit is left, and is it me or is it them. 34 columns, nothing beyond
+                   <code>bash</code>, <code>curl</code>, <code>jq</code> and <code>awk</code>.</p>
+
+                <h4>Why it exists</h4>
+                <p>Three facts govern a long session, and all three are normally <em>queried</em> rather than
+                   <em>visible</em>:</p>
+                <ul>
+                  <li><strong>Savings you have to ask for are savings you stop asking about.</strong> rtk tracks what
+                      it filters, but <code>rtk gain</code> is a command you run once out of curiosity and then never
+                      again. A number behind a command does not change behaviour.</li>
+                  <li><strong>The limit is the real constraint, and checking it costs a turn.</strong> Asking where
+                      you stand means stopping and spending context — exactly when you least want to interrupt
+                      yourself.</li>
+                  <li><strong>"Is it me or is it them?" is a browser tab away.</strong> When a session stalls, the
+                      first useful signal is whether Claude Code is degraded, and going to look means leaving the
+                      terminal.</li>
+                </ul>
+                <p>None of these deserve a window. They deserve a glance. So they live in a narrow pane at the side
+                   of the terminal that never needs interacting with, at a width you stop noticing.</p>
+
+                <h4>Two decisions worth knowing about</h4>
+                <ul>
+                  <li><strong>Motion means something.</strong> The spectrum bars scroll only while savings are
+                      actually accruing. When nothing changes the panel freezes grey and the header dot flips from
+                      live to idle — animation is a status signal, not decoration.</li>
+                  <li><strong>The bars are real data.</strong> The lower spectrum's height is literally total output
+                      over total input against the upper one. The gap between the two <em>is</em> the filtering,
+                      drawn to scale rather than illustrated.</li>
+                </ul>
+
+                <p class="aside"><strong>This is not rtk.</strong> rtk is a separate project by someone else — a Rust
+                   CLI proxy that filters command output before it reaches an LLM's context. This repo is only the
+                   terminal instrumentation around it; nothing here vendors or redistributes it.</p>
+              </template>
+            </div>
+
+            <figure class="plate">
+              <svg viewBox="0 0 260 200" role="img" aria-label="Narrow terminal pane showing token savings spectrum and usage">
+                <rect x="62" y="10" width="136" height="180" rx="3" fill="none" stroke="#1A1815" stroke-width="1.1"/>
+                <line x1="62" y1="32" x2="198" y2="32" stroke="#1A1815" stroke-width="1" opacity="0.45"/>
+                <circle cx="186" cy="21" r="3" fill="#9C4221"/>
+                <text x="72" y="25" fill="#1A1815" font-family="'JetBrains Mono',monospace" font-size="7.5">rtk meter</text>
+                <text x="72" y="50" fill="#1A1815" font-family="'JetBrains Mono',monospace" font-size="7" opacity="0.7">raw in</text>
+                <g fill="#1A1815" opacity="0.5">
+                  <rect x="72" y="56" width="4" height="14"/><rect x="79" y="52" width="4" height="18"/>
+                  <rect x="86" y="58" width="4" height="12"/><rect x="93" y="50" width="4" height="20"/>
+                  <rect x="100" y="60" width="4" height="10"/><rect x="107" y="54" width="4" height="16"/>
+                  <rect x="114" y="57" width="4" height="13"/><rect x="121" y="51" width="4" height="19"/>
+                  <rect x="128" y="59" width="4" height="11"/><rect x="135" y="53" width="4" height="17"/>
+                  <rect x="142" y="56" width="4" height="14"/><rect x="149" y="61" width="4" height="9"/>
+                  <rect x="156" y="55" width="4" height="15"/><rect x="163" y="58" width="4" height="12"/>
+                  <rect x="170" y="52" width="4" height="18"/><rect x="177" y="60" width="4" height="10"/>
+                </g>
+                <line x1="72" y1="80" x2="188" y2="80" stroke="#9C4221" stroke-width="1" stroke-dasharray="3 2"/>
+                <text x="98" y="77" fill="#9C4221" font-family="'JetBrains Mono',monospace" font-size="6.5">filter -71%</text>
+                <text x="72" y="96" fill="#1A1815" font-family="'JetBrains Mono',monospace" font-size="7" opacity="0.7">clean out</text>
+                <g fill="#9C4221">
+                  <rect x="72" y="101" width="4" height="5"/><rect x="79" y="99" width="4" height="7"/>
+                  <rect x="86" y="102" width="4" height="4"/><rect x="93" y="98" width="4" height="8"/>
+                  <rect x="100" y="103" width="4" height="3"/><rect x="107" y="100" width="4" height="6"/>
+                  <rect x="114" y="102" width="4" height="4"/><rect x="121" y="99" width="4" height="7"/>
+                  <rect x="128" y="103" width="4" height="3"/><rect x="135" y="100" width="4" height="6"/>
+                  <rect x="142" y="101" width="4" height="5"/><rect x="149" y="103" width="4" height="3"/>
+                  <rect x="156" y="100" width="4" height="6"/><rect x="163" y="102" width="4" height="4"/>
+                  <rect x="170" y="99" width="4" height="7"/><rect x="177" y="103" width="4" height="3"/>
+                </g>
+                <line x1="72" y1="122" x2="188" y2="122" stroke="#1A1815" stroke-width="1" opacity="0.25" stroke-dasharray="2 3"/>
+                <g fill="#1A1815" font-family="'JetBrains Mono',monospace" font-size="7" opacity="0.75">
+                  <text x="72" y="140">session  34%</text>
+                  <text x="72" y="155">weekly   61%</text>
+                  <text x="72" y="170">status</text>
+                </g>
+                <circle cx="122" cy="167" r="3" fill="#9C4221"/>
+                <circle cx="140" cy="167" r="3" fill="#9C4221"/>
+                <g fill="#1A1815" opacity="0.18">
+                  <rect x="128" y="134" width="34" height="6" rx="3"/>
+                  <rect x="128" y="149" width="52" height="6" rx="3"/>
+                </g>
+              </svg>
+              <figcaption>savings, usage, status</figcaption>
+            </figure>
           </div>
         </article>
       </div>
@@ -1097,7 +1494,32 @@
   </div>
 </div>
 
+<dialog class="modal" id="sheetModal" aria-labelledby="modalTitle">
+  <div class="modal-head">
+    <h3 id="modalTitle"></h3>
+    <button class="modal-x" onclick="closeMore()" aria-label="Close">&#10005;</button>
+  </div>
+  <div class="modal-body" id="modalBody" tabindex="-1"></div>
+</dialog>
+
 <script>
+  var _dlg = null;
+  function openMore(key) {
+    var tpl = document.getElementById('full-' + key);
+    if (!tpl) return;
+    _dlg = document.getElementById('sheetModal');
+    document.getElementById('modalTitle').textContent = tpl.dataset.title || '';
+    var body = document.getElementById('modalBody');
+    body.innerHTML = tpl.innerHTML;
+    _dlg.showModal();
+    body.scrollTop = 0;
+    body.focus();
+  }
+  function closeMore() { if (_dlg) _dlg.close(); }
+  document.addEventListener('click', function (e) {
+    if (e.target && e.target.id === 'sheetModal') closeMore();
+  });
+
   function route(evt, id) {
     document.querySelectorAll('.panel').forEach(function (p) { p.classList.remove('on'); });
     document.querySelectorAll('.tab').forEach(function (t) {
