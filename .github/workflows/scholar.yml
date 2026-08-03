@@ -20,21 +20,30 @@ jobs:
 
       - name: Fetch citation count from Google Scholar
         id: cites
+        shell: bash
         run: |
-          set -uo pipefail
+          set +e   # never abort mid-parse; we handle failure explicitly below
           UA='Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0 Safari/537.36'
           URL='https://scholar.google.com/citations?user=QTYlmK0AAAAJ&hl=en'
-          html="$(curl -sSL --compressed -A "$UA" "$URL")" || html=''
+          code="$(curl -sSL --compressed -A "$UA" -w '%{http_code}' -o page.html "$URL")"
+          bytes="$(wc -c < page.html | tr -d ' ')"
+          echo "http=$code bytes=$bytes"
+          if grep -qiE 'not a robot|unusual traffic|/sorry/|enablejs' page.html; then
+            echo "::warning::Scholar returned a bot-check / block page."
+          fi
           # The citation-indices table lists Citations (All) as the first gsc_rsb_std cell.
-          n="$(printf '%s' "$html" | grep -oE 'gsc_rsb_std">[0-9]+' | head -1 | grep -oE '[0-9]+')"
-          if [ -z "${n:-}" ]; then
-            echo "::warning::Could not parse a citation count (Scholar likely returned a CAPTCHA / block page). Keeping the last committed value."
+          n="$(grep -oE 'gsc_rsb_std">[0-9]+' page.html | head -1 | grep -oE '[0-9]+')"
+          if [ -z "$n" ]; then
+            echo "::warning::Could not parse a citation count. Keeping the last committed value."
+            echo "first matches in page (if any):"
+            grep -oE 'gsc_rsb_std[^<]*' page.html | head -5 || true
             echo "ok=0" >> "$GITHUB_OUTPUT"
           else
             echo "Parsed citation count: $n"
             echo "count=$n" >> "$GITHUB_OUTPUT"
             echo "ok=1" >> "$GITHUB_OUTPUT"
           fi
+          rm -f page.html
 
       - name: Write the count into the page
         if: steps.cites.outputs.ok == '1'
