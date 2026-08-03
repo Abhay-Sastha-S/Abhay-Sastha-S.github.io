@@ -1,0 +1,54 @@
+name: Refresh Scholar citations
+
+on:
+  schedule:
+    - cron: '17 6 1 * *'   # 06:17 UTC on the 1st of each month
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+concurrency:
+  group: scholar-refresh
+  cancel-in-progress: false
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Fetch citation count from Google Scholar
+        id: cites
+        run: |
+          set -uo pipefail
+          UA='Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0 Safari/537.36'
+          URL='https://scholar.google.com/citations?user=QTYlmK0AAAAJ&hl=en'
+          html="$(curl -sSL --compressed -A "$UA" "$URL")" || html=''
+          # The citation-indices table lists Citations (All) as the first gsc_rsb_std cell.
+          n="$(printf '%s' "$html" | grep -oE 'gsc_rsb_std">[0-9]+' | head -1 | grep -oE '[0-9]+')"
+          if [ -z "${n:-}" ]; then
+            echo "::warning::Could not parse a citation count (Scholar likely returned a CAPTCHA / block page). Keeping the last committed value."
+            echo "ok=0" >> "$GITHUB_OUTPUT"
+          else
+            echo "Parsed citation count: $n"
+            echo "count=$n" >> "$GITHUB_OUTPUT"
+            echo "ok=1" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Write the count into the page
+        if: steps.cites.outputs.ok == '1'
+        run: python3 scripts/update_cites.py "${{ steps.cites.outputs.count }}"
+
+      - name: Commit if the number changed
+        if: steps.cites.outputs.ok == '1'
+        run: |
+          if git diff --quiet; then
+            echo "Citation count unchanged - nothing to commit."
+            exit 0
+          fi
+          git config user.name  "scholar-bot"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "Update Scholar citation count (${{ steps.cites.outputs.count }})"
+          git push
