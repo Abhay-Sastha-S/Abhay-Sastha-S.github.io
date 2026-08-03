@@ -296,6 +296,23 @@
       padding-left: 14px; color: var(--dim); font-size: 14.4px;
     }
 
+    /* ============ empty state ============ */
+    .empty {
+      border: 1px dashed var(--rail, #DCD3C4);
+      border-color: #DDD3C3;
+      border-radius: 2px;
+      padding: 40px 34px;
+      max-width: 620px;
+      background: rgba(242, 236, 226, 0.42);
+    }
+    .empty .stamp {
+      font-family: var(--mono); font-size: 10.5px; font-weight: 500;
+      letter-spacing: .16em; text-transform: uppercase;
+      color: var(--faint); margin: 0 0 12px;
+    }
+    .empty p.line { margin: 0; font-size: 15.4px; color: #2B2621; }
+    .empty p.line + p.line { margin-top: 10px; }
+
     /* ============ cv entries ============ */
     .cv { padding-bottom: 30px; }
     .cv-item { padding: 0 0 24px; }
@@ -476,6 +493,7 @@
         <button class="tab on" role="tab" aria-selected="true"  onclick="route(event,'research')">Research</button>
         <button class="tab"    role="tab" aria-selected="false" onclick="route(event,'projects')">Projects</button>
         <button class="tab"    role="tab" aria-selected="false" onclick="route(event,'clauding')">Clauding</button>
+        <button class="tab"    role="tab" aria-selected="false" onclick="route(event,'blogs')">Blogs</button>
         <button class="tab"    role="tab" aria-selected="false" onclick="route(event,'experience')">Experience</button>
         <button class="tab"    role="tab" aria-selected="false" onclick="route(event,'education')">Education</button>
       </div>
@@ -1284,6 +1302,31 @@
             </figure>
           </div>
         </article>
+      </div>
+    </div>
+
+
+    <!-- ======================= BLOGS ======================= -->
+    <div id="blogs" class="panel" role="tabpanel">
+
+      <div class="row">
+        <div class="layer">
+          <h2>Blogs</h2>
+          <p class="note">Notes on things I have built, broken, or read closely enough to have an opinion about.</p>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="blk">
+          <div class="empty">
+            <p class="stamp">Nothing here yet</p>
+            <p class="line">
+              The backlog exists — it just lives in scratch files, half-finished notes, and commit messages that
+              made sense for about a day. Once I can get the ideas into an order that survives contact with a
+              reader, they will show up here.
+            </p>
+          </div>
+        </div>
       </div>
     </div>
 
