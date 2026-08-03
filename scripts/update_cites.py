@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 """Write per-DOI citation counts into index.html.
 
-Usage: update_cites.py '<json {doi: count}>'
+Usage: update_cites.py <path-to-json-file | json-string>
+  where the JSON is an object {doi: count}.
 
 For each `<span class="cite" data-cite="DOI"></span>` in the page, set its
 text to "N citations" (hidden when N is 0). Also writes assets/scholar.json
@@ -9,7 +10,9 @@ with the per-paper breakdown, the total, and the date.
 """
 import re, sys, json, datetime, pathlib
 
-counts = json.loads(sys.argv[1])
+arg = sys.argv[1]
+p = pathlib.Path(arg)
+counts = json.loads(p.read_text() if p.is_file() else arg)
 root = pathlib.Path(__file__).resolve().parent.parent
 idx = root / "index.html"
 html = idx.read_text()
