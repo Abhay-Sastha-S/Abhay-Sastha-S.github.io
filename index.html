@@ -95,9 +95,9 @@
     .links a { border-bottom-color: rgba(156,66,33,.22); }
 
     /* ============ tabs ============ */
-    .router-row { margin-top: 52px; }
+    .tabbar-row { margin-top: 52px; }
 
-    .router {
+    .tabbar {
       display: flex;
       align-items: stretch;
       flex-wrap: wrap;
@@ -312,7 +312,7 @@
 <div class="sheet">
   <div class="stream">
 
-    <!-- ======================= INPUT ======================= -->
+    <!-- ======================= HEADER ======================= -->
     <div class="row">
       <header class="masthead">
        <div class="mast-in">
@@ -348,9 +348,9 @@
       </header>
     </div>
 
-    <!-- ======================= ROUTER ======================= -->
-    <div class="row router-row">
-      <div class="router" role="tablist">
+    <!-- ======================= TABS ======================= -->
+    <div class="row tabbar-row">
+      <div class="tabbar" role="tablist">
         <button class="tab on" role="tab" aria-selected="true"  onclick="route(event,'research')">Research</button>
         <button class="tab"    role="tab" aria-selected="false" onclick="route(event,'projects')">Projects</button>
         <button class="tab"    role="tab" aria-selected="false" onclick="route(event,'experience')">Experience</button>
@@ -1087,7 +1087,7 @@
 
     </div>
 
-    <!-- ======================= OUTPUT ======================= -->
+    <!-- ======================= FOOTER ======================= -->
     <div class="row">
       <footer class="out">
         <p class="colophon">Last updated August 2026 · Built by hand, no framework.</p>
