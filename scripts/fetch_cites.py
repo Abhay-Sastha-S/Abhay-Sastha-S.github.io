@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
-"""Sum citation counts across the DOIs in assets/dois.txt.
+"""Fetch a per-DOI citation count for every DOI in assets/dois.txt.
 
 Primary source: OpenAlex (free, no key, datacenter-friendly).
 Per-DOI fallback: Crossref. Both are public APIs.
 
-Prints the integer total to stdout and exits 0 on success.
+Prints a JSON object {doi: count} to stdout and exits 0 on success.
 Exits non-zero if not a single DOI could be resolved, so the caller can
-keep the last committed value rather than write a wrong number.
+keep the last committed values rather than write wrong numbers.
 """
 import json, sys, pathlib, urllib.request, urllib.parse
 
@@ -39,25 +39,21 @@ def main():
         if line and not line.startswith("#"):
             dois.append(line)
 
-    total, resolved = 0, 0
+    counts = {}
     for doi in dois:
-        n = None
         for name, fn in (("openalex", openalex), ("crossref", crossref)):
             try:
-                n = fn(doi)
-                print("  %-8s %s -> %d" % (name, doi, n), file=sys.stderr)
+                counts[doi] = fn(doi)
+                print("  %-8s %s -> %d" % (name, doi, counts[doi]), file=sys.stderr)
                 break
             except Exception as e:
                 print("  %-8s %s failed: %s" % (name, doi, e), file=sys.stderr)
-        if n is not None:
-            total += n
-            resolved += 1
 
-    if resolved == 0:
+    if not counts:
         print("no DOIs resolved", file=sys.stderr)
         sys.exit(1)
 
-    print(total)
+    print(json.dumps(counts))
 
 
 if __name__ == "__main__":

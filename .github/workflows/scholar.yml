@@ -18,24 +18,28 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Fetch citation count (OpenAlex, Crossref fallback)
+      - name: Fetch per-DOI citation counts (OpenAlex, Crossref fallback)
         id: cites
         shell: bash
         run: |
           set +e   # never abort mid-fetch; we decide below
-          n="$(python3 scripts/fetch_cites.py)"
-          if [ -z "$n" ]; then
-            echo "::warning::Could not resolve any DOI. Keeping the last committed value."
+          counts="$(python3 scripts/fetch_cites.py)"
+          if [ -z "$counts" ]; then
+            echo "::warning::Could not resolve any DOI. Keeping the last committed values."
             echo "ok=0" >> "$GITHUB_OUTPUT"
           else
-            echo "Total citations: $n"
-            echo "count=$n" >> "$GITHUB_OUTPUT"
-            echo "ok=1" >> "$GITHUB_OUTPUT"
+            echo "Counts: $counts"
+            {
+              echo "counts<<JSON"
+              echo "$counts"
+              echo "JSON"
+              echo "ok=1"
+            } >> "$GITHUB_OUTPUT"
           fi
 
-      - name: Write the count into the page
+      - name: Write the counts into the page
         if: steps.cites.outputs.ok == '1'
-        run: python3 scripts/update_cites.py "${{ steps.cites.outputs.count }}"
+        run: python3 scripts/update_cites.py "${{ steps.cites.outputs.counts }}"
 
       - name: Commit if the number changed
         if: steps.cites.outputs.ok == '1'

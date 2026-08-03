@@ -93,8 +93,6 @@
       gap: 0 18px;
     }
     .links a { border-bottom-color: rgba(156,66,33,.22); }
-    .links a.cites { color: var(--dim); border-bottom-color: rgba(107,100,89,.28); }
-    .links a.cites:hover { color: var(--ink); border-bottom-color: var(--ink); }
 
     /* ============ tabs ============ */
     .tabbar-row { margin-top: 52px; }
@@ -204,6 +202,8 @@
       flex-wrap: wrap;
       gap: 0 14px;
     }
+    .refs .cite { color: var(--faint); }
+    .refs .cite:empty { display: none; }
 
     .tags { margin-top: 13px; display: flex; flex-wrap: wrap; gap: 5px; }
     .tag {
@@ -477,9 +477,6 @@
           <a href="mailto:s.abhaysastha@gmail.com">email</a>
           <a href="https://github.com/Abhay-Sastha-S">github</a>
           <a href="https://scholar.google.com/citations?user=QTYlmK0AAAAJ&hl=en">scholar</a>
-          <!-- cites:start -->
-          <a class="cites" href="https://scholar.google.com/citations?user=QTYlmK0AAAAJ&hl=en">3 citations</a>
-          <!-- cites:end -->
           <a href="https://www.linkedin.com/in/abhay-sastha-s">linkedin</a>
           <a href="assets/resume.pdf">cv</a>
         </nav>
@@ -613,6 +610,7 @@
                 <button class="more" onclick="openMore('walo')">read more</button>
                 <a href="https://doi.org/10.1007/s12065-025-01119-6">paper</a>
                 <a href="https://scholar.google.com/citations?user=QTYlmK0AAAAJ&hl=en">scholar</a>
+                <span class="cite" data-cite="10.1007/s12065-025-01119-6">3 citations</span>
               </p>
               <div class="tags">
                 <span class="tag">Metaheuristics</span>
