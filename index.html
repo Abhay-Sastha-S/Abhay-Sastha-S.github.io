@@ -1,0 +1,1311 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <title>Abhay Sastha S</title>
+  <meta name="author" content="Abhay Sastha S">
+  <meta name="description" content="Abhay Sastha S — machine learning research and engineering. Mixture-of-Experts aggregation, efficient inference, multimodal retrieval.">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="canonical" href="https://abhay-sastha-s.github.io/">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%23FAF7F2'/><text x='16' y='23' font-size='19' font-family='Georgia,serif' text-anchor='middle' fill='%239C4221'>A</text></svg>">
+
+  <style>
+    :root {
+      --paper:  #FAF7F2;
+      --plate:  #F2ECE2;
+      --ink:    #1A1815;
+      --dim:    #6B6459;
+      --faint:  #A79C8A;
+      --rust:   #9C4221;
+      --rule:   #E5DED2;
+      --rail:   #DCD3C4;
+
+      --serif: 'Source Serif 4', Georgia, 'Times New Roman', serif;
+      --mono:  'JetBrains Mono', 'SF Mono', Menlo, Consolas, monospace;
+
+      --gutter: 76px;
+      --spine:  27px;
+    }
+
+    * { box-sizing: border-box; }
+
+    html { -webkit-text-size-adjust: 100%; }
+
+    body {
+      margin: 0;
+      background: var(--paper);
+      color: var(--ink);
+      font-family: var(--serif);
+      font-size: 16px;
+      line-height: 1.62;
+      font-feature-settings: "onum" 1, "kern" 1;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .sheet {
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 0 28px 96px;
+    }
+
+    a {
+      color: var(--rust);
+      text-decoration: none;
+      border-bottom: 1px solid rgba(156, 66, 33, 0.28);
+      transition: border-color .18s ease, color .18s ease;
+    }
+    a:hover { color: var(--ink); border-bottom-color: var(--ink); }
+
+    /* ============ the residual stream ============ */
+    .stream { position: relative; }
+    .stream::before {
+      content: "";
+      position: absolute;
+      left: var(--spine);
+      top: 0;
+      bottom: 0;
+      width: 1px;
+      background: var(--rail);
+    }
+
+    .row {
+      display: grid;
+      grid-template-columns: var(--gutter) minmax(0, 1fr);
+      position: relative;
+    }
+
+    .rail { position: relative; }
+
+    /* node sitting on the spine */
+    .rail .dot {
+      position: absolute;
+      left: var(--spine);
+      top: 9px;
+      transform: translateX(-50%);
+      width: 9px; height: 9px;
+      border-radius: 50%;
+      background: var(--paper);
+      border: 1.5px solid var(--rust);
+    }
+    .rail .dot.hollow { border-color: var(--faint); }
+
+    /* the ⊕ residual-add glyph */
+    .rail .add {
+      position: absolute;
+      left: var(--spine);
+      transform: translateX(-50%);
+      background: var(--paper);
+      color: var(--faint);
+      font-family: var(--mono);
+      font-size: 13px;
+      line-height: 1;
+      padding: 4px 0;
+    }
+
+    .rail .idx {
+      position: absolute;
+      left: 0;
+      top: 30px;
+      width: calc(var(--spine) - 10px);
+      text-align: right;
+      font-family: var(--mono);
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: .06em;
+      color: var(--faint);
+    }
+
+    /* short tick connecting spine to content */
+    .rail .tick {
+      position: absolute;
+      left: calc(var(--spine) + 5px);
+      top: 13px;
+      width: calc(var(--gutter) - var(--spine) - 22px);
+      height: 1px;
+      background: var(--rail);
+    }
+
+    /* ============ header ============ */
+    .masthead { padding: 72px 0 8px; }
+
+    .mast-in {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 196px;
+      gap: 30px;
+      align-items: start;
+    }
+    .mast-plate { margin-top: 6px; }
+
+    .eyebrow {
+      font-family: var(--mono);
+      font-size: 10.5px;
+      font-weight: 500;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+      color: var(--faint);
+      margin-bottom: 18px;
+    }
+
+    h1 {
+      font-family: var(--serif);
+      font-size: 40px;
+      font-weight: 600;
+      letter-spacing: -0.015em;
+      line-height: 1.1;
+      margin: 0 0 20px;
+    }
+
+    .bio { max-width: 62ch; }
+    .bio p { margin: 0 0 13px; color: #2B2621; }
+    .bio strong { font-weight: 600; }
+
+    .links {
+      margin-top: 24px;
+      font-family: var(--mono);
+      font-size: 12px;
+      letter-spacing: .02em;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0 18px;
+    }
+    .links a { border-bottom-color: rgba(156,66,33,.22); }
+
+    /* ============ router / tabs ============ */
+    .router-row { margin-top: 52px; }
+
+    .router {
+      display: flex;
+      align-items: stretch;
+      flex-wrap: wrap;
+      border-top: 1px solid var(--ink);
+      border-bottom: 1px solid var(--rule);
+    }
+
+    .tab {
+      appearance: none;
+      background: none;
+      border: 0;
+      border-bottom: 2px solid transparent;
+      margin-bottom: -1px;
+      padding: 13px 22px 12px 0;
+      margin-right: 26px;
+      cursor: pointer;
+      font-family: var(--mono);
+      font-size: 11.5px;
+      font-weight: 500;
+      letter-spacing: .13em;
+      text-transform: uppercase;
+      color: var(--faint);
+      transition: color .18s ease;
+    }
+    .tab:hover { color: var(--ink); }
+    .tab.on { color: var(--ink); border-bottom-color: var(--rust); border-bottom-width: 3px; }
+    .tab .n { color: var(--rail); margin-right: 8px; }
+    .tab.on .n { color: var(--rust); }
+
+    .panel { display: none; }
+    .panel.on { display: block; animation: rise .28s ease-out; }
+    @keyframes rise {
+      from { opacity: 0; transform: translateY(6px); }
+      to   { opacity: 1; transform: none; }
+    }
+
+    /* ============ layer heading ============ */
+    .layer { padding: 54px 0 26px; }
+    .layer .lbl {
+      font-family: var(--mono);
+      font-size: 10.5px;
+      font-weight: 500;
+      letter-spacing: .16em;
+      text-transform: uppercase;
+      color: var(--faint);
+      display: block;
+      margin-bottom: 7px;
+    }
+    .layer h2 {
+      font-size: 25px;
+      font-weight: 600;
+      letter-spacing: -0.01em;
+      margin: 0 0 12px;
+    }
+    .layer .note { color: var(--dim); font-size: 15px; max-width: 60ch; margin: 0; }
+
+    /* ============ entry block ============ */
+    .blk { padding-bottom: 46px; }
+
+    .blk-in {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 196px;
+      gap: 30px;
+      align-items: start;
+    }
+
+    .blk h3 {
+      font-size: 18px;
+      font-weight: 600;
+      line-height: 1.32;
+      letter-spacing: -0.005em;
+      margin: 0 0 7px;
+    }
+    .blk h3 a { color: var(--ink); border: 0; }
+    .blk h3 a:hover { color: var(--rust); }
+
+    .byline { font-size: 14.5px; color: #35302A; margin: 0 0 5px; }
+    .byline .me { font-weight: 700; }
+
+    .meta {
+      font-family: var(--mono);
+      font-size: 11px;
+      letter-spacing: .04em;
+      color: var(--dim);
+      margin: 0 0 11px;
+    }
+    .meta .venue {
+      color: var(--rust);
+      background: rgba(156, 66, 33, 0.075);
+      padding: 2px 6px;
+      border-radius: 2px;
+    }
+
+    .blk p.body { margin: 0 0 11px; font-size: 15.2px; color: #2B2621; }
+    .blk p.body:last-of-type { margin-bottom: 0; }
+    .blk em { font-style: italic; }
+
+    .refs {
+      font-family: var(--mono);
+      font-size: 11px;
+      letter-spacing: .04em;
+      margin: 12px 0 0;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0 14px;
+    }
+
+    .tags { margin-top: 13px; display: flex; flex-wrap: wrap; gap: 5px; }
+    .tag {
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: .07em;
+      text-transform: uppercase;
+      color: var(--dim);
+      border: 1px solid var(--rule);
+      padding: 3px 7px;
+      border-radius: 2px;
+    }
+
+    figure.plate {
+      margin: 0;
+      border: 1px solid var(--rule);
+      background: var(--plate);
+      padding: 12px;
+      border-radius: 2px;
+    }
+    figure.plate svg { display: block; width: 100%; height: auto; }
+    figure.plate figcaption {
+      font-family: var(--mono);
+      font-size: 9.5px;
+      letter-spacing: .07em;
+      text-transform: uppercase;
+      color: var(--faint);
+      margin-top: 9px;
+      text-align: center;
+    }
+
+    /* ============ cv entries ============ */
+    .cv { padding-bottom: 30px; }
+    .cv-item { padding: 0 0 24px; }
+    .cv-item + .cv-item { border-top: 1px solid var(--rule); padding-top: 22px; }
+
+    .cv-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+    .cv-role { font-size: 17px; font-weight: 600; margin: 0; }
+    .cv-when {
+      font-family: var(--mono);
+      font-size: 10.5px;
+      letter-spacing: .07em;
+      text-transform: uppercase;
+      color: var(--faint);
+      white-space: nowrap;
+    }
+    .cv-org { font-size: 14.5px; color: var(--rust); margin: 3px 0 0; }
+    .cv-org .where { color: var(--dim); }
+    .cv ul { margin: 12px 0 0; padding-left: 17px; }
+    .cv li { margin-bottom: 6px; font-size: 15px; color: #2B2621; }
+    .cv li::marker { color: var(--faint); }
+    .cv code {
+      font-family: var(--mono);
+      font-size: 12.5px;
+      background: var(--plate);
+      padding: 1px 4px;
+      border-radius: 2px;
+    }
+
+    .skills { margin-top: 4px; }
+    .skill {
+      display: grid;
+      grid-template-columns: 120px minmax(0, 1fr);
+      gap: 14px;
+      padding: 9px 0;
+      border-top: 1px solid var(--rule);
+      font-size: 15px;
+    }
+    .skill:first-child { border-top: 0; }
+    .skill dt {
+      font-family: var(--mono);
+      font-size: 10.5px;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: var(--faint);
+      padding-top: 4px;
+    }
+    .skill dd { margin: 0; color: #2B2621; }
+
+    /* ============ output ============ */
+    .out { padding: 30px 0 0; }
+    .out .cap {
+      font-family: var(--mono);
+      font-size: 10.5px;
+      letter-spacing: .16em;
+      text-transform: uppercase;
+      color: var(--faint);
+    }
+    .colophon {
+      margin-top: 12px;
+      font-size: 13.5px;
+      color: var(--dim);
+      max-width: 60ch;
+    }
+
+    /* ============ narrow ============ */
+    @media (max-width: 820px) {
+      body { font-size: 15.5px; }
+      :root { --gutter: 44px; --spine: 15px; }
+      .sheet { padding: 0 20px 72px; }
+      h1 { font-size: 32px; }
+      .blk-in { grid-template-columns: minmax(0, 1fr); gap: 20px; }
+      figure.plate { max-width: 320px; }
+      .rail .idx { display: none; }
+      .rail .tick { width: calc(var(--gutter) - var(--spine) - 16px); }
+      .tab { margin-right: 16px; padding-right: 8px; }
+      .mast-in { grid-template-columns: minmax(0, 1fr); gap: 26px; }
+      .mast-plate { max-width: 200px; }
+      .skill { grid-template-columns: minmax(0, 1fr); gap: 2px; }
+      .masthead { padding-top: 52px; }
+    }
+  </style>
+</head>
+
+<body>
+<div class="sheet">
+  <div class="stream">
+
+    <!-- ======================= INPUT ======================= -->
+    <div class="row">
+      <div class="rail"><span class="dot"></span><span class="tick"></span></div>
+      <header class="masthead">
+       <div class="mast-in">
+        <div>
+        <div class="eyebrow">Input &nbsp;·&nbsp; Bengaluru, IN</div>
+        <h1>Abhay Sastha S</h1>
+        <div class="bio">
+          <p>
+            I am a machine learning intern at <a href="https://www.askmyfi.com/">MyFi</a> (TIFIN), where I work on
+            multi-agent orchestration, retrieval systems, and low-latency model serving for financial assistants
+            deployed at MyFi, SBI, Axis, DSP, and Motilal.
+          </p>
+          <p>
+            I am finishing two undergraduate degrees at once — a B.Tech in Computer Science at
+            <a href="https://vit.ac.in/">VIT Vellore</a> and a BS in Data Science and Applications at
+            <a href="https://study.iitm.ac.in/ds/">IIT Madras</a>.
+          </p>
+          <p>
+            My current research is on <strong>Mixture-of-Experts architectures</strong> — specifically on the fact that
+            an MoE router decides how to combine expert outputs before a single expert has run. Beyond that I am drawn to
+            efficient inference and distillation, multimodal document understanding, and metaheuristic optimization.
+          </p>
+        </div>
+        <nav class="links">
+          <a href="mailto:s.abhaysastha@gmail.com">email</a>
+          <a href="https://github.com/Abhay-Sastha-S">github</a>
+          <a href="https://scholar.google.com/citations?user=QTYlmK0AAAAJ&hl=en">scholar</a>
+          <a href="https://www.linkedin.com/in/abhay-sastha-s">linkedin</a>
+          <a href="assets/resume.pdf">cv</a>
+        </nav>
+        </div>
+
+        <figure class="plate mast-plate">
+          <svg viewBox="0 0 200 292" role="img" aria-label="This page laid out as a transformer stack: input, router, three blocks, output">
+            <!-- spine -->
+            <line x1="100" y1="38" x2="100" y2="248" stroke="#DCD3C4" stroke-width="1"/>
+            <!-- input -->
+            <rect x="35" y="10" width="130" height="28" rx="2" fill="none" stroke="#1A1815" stroke-width="1.1"/>
+            <text x="100" y="28" text-anchor="middle" fill="#1A1815" font-family="'JetBrains Mono',monospace" font-size="9" letter-spacing="1">input</text>
+            <!-- router -->
+            <rect x="35" y="62" width="130" height="28" rx="2" fill="none" stroke="#9C4221" stroke-width="1.3"/>
+            <text x="100" y="80" text-anchor="middle" fill="#9C4221" font-family="'JetBrains Mono',monospace" font-size="9" letter-spacing="1">router</text>
+            <circle cx="100" cy="50" r="5" fill="#FAF7F2" stroke="#9C4221" stroke-width="1"/>
+            <text x="100" y="53.5" text-anchor="middle" fill="#9C4221" font-family="'JetBrains Mono',monospace" font-size="7">+</text>
+            <!-- blocks -->
+            <g fill="none" stroke="#1A1815" stroke-width="1.1">
+              <rect x="35" y="112" width="130" height="26" rx="2"/>
+              <rect x="35" y="150" width="130" height="26" rx="2"/>
+              <rect x="35" y="188" width="130" height="26" rx="2"/>
+            </g>
+            <g fill="#1A1815" font-family="'JetBrains Mono',monospace" font-size="8.5" letter-spacing=".5">
+              <text x="47" y="129">01</text><text x="72" y="129" opacity="0.75">research</text>
+              <text x="47" y="167">02</text><text x="72" y="167" opacity="0.75">projects</text>
+              <text x="47" y="205">03</text><text x="72" y="205" opacity="0.75">experience</text>
+            </g>
+            <!-- residual skip -->
+            <path d="M35 125 C 14 125, 14 201, 35 201" fill="none" stroke="#9C4221" stroke-width="1" stroke-dasharray="3 3"/>
+            <!-- merge + output -->
+            <circle cx="100" cy="230" r="5" fill="#FAF7F2" stroke="#9C4221" stroke-width="1"/>
+            <text x="100" y="233.5" text-anchor="middle" fill="#9C4221" font-family="'JetBrains Mono',monospace" font-size="7">+</text>
+            <rect x="35" y="252" width="130" height="28" rx="2" fill="none" stroke="#1A1815" stroke-width="1.1" opacity="0.55"/>
+            <text x="100" y="270" text-anchor="middle" fill="#1A1815" opacity="0.7" font-family="'JetBrains Mono',monospace" font-size="9" letter-spacing="1">output</text>
+          </svg>
+          <figcaption>this page</figcaption>
+        </figure>
+       </div>
+      </header>
+    </div>
+
+    <!-- ======================= ROUTER ======================= -->
+    <div class="row router-row">
+      <div class="rail">
+        <span class="add" style="top:14px">&#8853;</span>
+        <span class="idx" style="top:38px">ROUTER</span>
+      </div>
+      <div class="router" role="tablist">
+        <button class="tab on" role="tab" aria-selected="true"  onclick="route(event,'research')"><span class="n">01</span>Research</button>
+        <button class="tab"    role="tab" aria-selected="false" onclick="route(event,'projects')"><span class="n">02</span>Projects</button>
+        <button class="tab"    role="tab" aria-selected="false" onclick="route(event,'experience')"><span class="n">03</span>Experience</button>
+      </div>
+    </div>
+
+    <!-- ======================= 01 · RESEARCH ======================= -->
+    <div id="research" class="panel on" role="tabpanel">
+
+      <div class="row">
+        <div class="rail"><span class="dot"></span><span class="tick"></span></div>
+        <div class="layer">
+          <span class="lbl">Block 01</span>
+          <h2>Research</h2>
+          <p class="note">
+            Efficient transformer architectures, multimodal retrieval, and metaheuristic optimization for image analysis.
+          </p>
+        </div>
+      </div>
+
+      <!-- ExpertAttention -->
+      <div class="row">
+        <div class="rail">
+          <span class="dot"></span><span class="tick"></span>
+          <span class="idx">01.1</span>
+          <span class="add" style="bottom:22px">&#8853;</span>
+        </div>
+        <article class="blk">
+          <div class="blk-in">
+            <div>
+              <h3>ExpertAttention: Output-Conditioned Aggregation for Mixture-of-Experts Transformers</h3>
+              <p class="byline"><span class="me">Abhay Sastha S</span></p>
+              <p class="meta"><span class="venue">Work in progress</span> &nbsp;·&nbsp; 2026</p>
+              <p class="body">
+                Sparse MoE transformers compute aggregation weights from the input <em>before any expert runs</em>,
+                conflating two distinct decisions: which experts to activate, and how to combine what they produce.
+                ExpertAttention (EA) leaves routing untouched and replaces the fixed weighted sum with a lightweight
+                attention over actual expert outputs — Q = W<sub>q</sub>·x, K = RMSNorm(W<sub>k</sub>·E),
+                V = W<sub>v</sub>·E — at under 0.003% compute overhead.
+              </p>
+              <p class="body">
+                At 84M parameters (k=2, 30K steps, C4) the work establishes three things.
+                <strong>A cold-start failure:</strong> introducing EA from step 0 prevents expert specialisation
+                entirely — router entropy froze at its 0.692 maximum against the baseline's healthy 0.637 → 0.501 curve,
+                and the validation perplexity gap widened monotonically to +68%.
+                <strong>A fix:</strong> a scheduled residual ramp — freeze to 10K, then λ decaying 1 → 0 over 8K steps,
+                timed off the baseline's own specialisation transition — reaches val PPL 275.9 against 301.9 for the
+                baseline and 323.8 for a hard switch. Linear and cosine ramps are indistinguishable, so the existence of
+                a ramp matters and its shape does not.
+                <strong>An independent signal:</strong> EA–router correlation traces an arc of −0.38 → 0.0 → +0.52, a
+                learned policy the input-only router cannot express.
+              </p>
+              <p class="body">
+                Next: integrating Expert Divergence Learning — EDL forces expert diversity, EA exploits it at
+                aggregation time — and scaling to ≥1B active parameters on SlimPajama with downstream evaluation.
+              </p>
+              <p class="refs"><a href="assets/proposal_msr.pdf">proposal</a></p>
+              <div class="tags">
+                <span class="tag">Mixture-of-Experts</span>
+                <span class="tag">LLM Pretraining</span>
+                <span class="tag">Architecture</span>
+              </div>
+            </div>
+            <figure class="plate">
+              <svg viewBox="0 0 260 190" role="img" aria-label="Expert outputs aggregated by attention rather than router weights">
+                <g stroke="#1A1815" fill="none" stroke-width="1.1">
+                  <rect x="96" y="24" width="58" height="28" rx="2"/>
+                  <rect x="96" y="81" width="58" height="28" rx="2"/>
+                  <rect x="96" y="138" width="58" height="28" rx="2"/>
+                </g>
+                <g fill="#1A1815" font-family="'JetBrains Mono',monospace" font-size="10" text-anchor="middle">
+                  <text x="125" y="42">E₁</text><text x="125" y="99">E₂</text><text x="125" y="156">E₃</text>
+                </g>
+                <!-- routing (unchanged) -->
+                <g stroke="#1A1815" stroke-width="1" fill="none" opacity="0.28">
+                  <path d="M34 95 C 66 95, 66 38, 96 38"/>
+                  <path d="M34 95 L96 95"/>
+                  <path d="M34 95 C 66 95, 66 152, 96 152"/>
+                </g>
+                <circle cx="28" cy="95" r="6" fill="#1A1815"/>
+                <text x="28" y="82" text-anchor="middle" fill="#1A1815" font-family="'JetBrains Mono',monospace" font-size="9">x</text>
+                <!-- output-conditioned aggregation -->
+                <g stroke="#9C4221" stroke-width="1.5" fill="none">
+                  <path d="M154 38 C 190 38, 194 95, 222 95"/>
+                  <path d="M154 95 L222 95"/>
+                  <path d="M154 152 C 190 152, 194 95, 222 95"/>
+                </g>
+                <circle cx="229" cy="95" r="8" fill="#9C4221"/>
+                <text x="229" y="99" text-anchor="middle" fill="#FAF7F2" font-family="'JetBrains Mono',monospace" font-size="9">α</text>
+              </svg>
+              <figcaption>α from outputs, not input</figcaption>
+            </figure>
+          </div>
+        </article>
+      </div>
+
+      <!-- WALO -->
+      <div class="row">
+        <div class="rail">
+          <span class="dot"></span><span class="tick"></span>
+          <span class="idx">01.2</span>
+          <span class="add" style="bottom:22px">&#8853;</span>
+        </div>
+        <article class="blk">
+          <div class="blk-in">
+            <div>
+              <h3><a href="https://doi.org/10.1007/s12065-025-01119-6">A hybrid whale–ant lion optimization algorithm with random opposition-based strategy for multilevel image thresholding</a></h3>
+              <p class="byline"><span class="me">S. Abhay Sastha</span>, Manish Mahato, Sarada Mohapatra, Subhabrata Rath, Prabhujit Mohapatra</p>
+              <p class="meta"><span class="venue">Evolutionary Intelligence 19(1)</span> &nbsp;·&nbsp; Springer Nature &nbsp;·&nbsp; 2026</p>
+              <p class="body">
+                A hybrid metaheuristic combining whale optimization with ant lion optimization under a random
+                opposition-based learning strategy, applied to multilevel image thresholding. Carried out at the
+                VIT Vellore SAS Lab under Prof. Prabhujit Mohapatra.
+              </p>
+              <p class="refs">
+                <a href="https://doi.org/10.1007/s12065-025-01119-6">paper</a>
+                <a href="https://scholar.google.com/citations?user=QTYlmK0AAAAJ&hl=en">scholar</a>
+              </p>
+              <div class="tags">
+                <span class="tag">Metaheuristics</span>
+                <span class="tag">Global Optimization</span>
+                <span class="tag">Image Segmentation</span>
+              </div>
+            </div>
+            <figure class="plate">
+              <svg viewBox="0 0 260 190" role="img" aria-label="Histogram split by optimized thresholds with a convergence curve">
+                <g fill="#1A1815" opacity="0.14">
+                  <rect x="24" y="118" width="13" height="52"/><rect x="41" y="98" width="13" height="72"/>
+                  <rect x="58" y="58" width="13" height="112"/><rect x="75" y="84" width="13" height="86"/>
+                  <rect x="92" y="126" width="13" height="44"/><rect x="109" y="72" width="13" height="98"/>
+                  <rect x="126" y="46" width="13" height="124"/><rect x="143" y="90" width="13" height="80"/>
+                  <rect x="160" y="112" width="13" height="58"/><rect x="177" y="132" width="13" height="38"/>
+                  <rect x="194" y="104" width="13" height="66"/><rect x="211" y="140" width="13" height="30"/>
+                </g>
+                <g stroke="#9C4221" stroke-width="1.2" stroke-dasharray="4 3">
+                  <line x1="88" y1="26" x2="88" y2="176"/>
+                  <line x1="156" y1="26" x2="156" y2="176"/>
+                  <line x1="207" y1="26" x2="207" y2="176"/>
+                </g>
+                <path d="M24 44 C 68 30, 96 82, 138 92 S 208 114, 236 118" fill="none" stroke="#1A1815" stroke-width="1.5"/>
+                <line x1="24" y1="176" x2="236" y2="176" stroke="#1A1815" stroke-width="1"/>
+              </svg>
+              <figcaption>multilevel thresholds</figcaption>
+            </figure>
+          </div>
+        </article>
+      </div>
+
+      <!-- Keratoconus -->
+      <div class="row">
+        <div class="rail">
+          <span class="dot"></span><span class="tick"></span>
+          <span class="idx">01.3</span>
+          <span class="add" style="bottom:22px">&#8853;</span>
+        </div>
+        <article class="blk">
+          <div class="blk-in">
+            <div>
+              <h3>4 to 7: A hybrid deep learning model for detection of keratoconus with and without feature selection using EfficientNetV2</h3>
+              <p class="byline"><span class="me">Abhay Sastha S</span> et al.</p>
+              <p class="meta"><span class="venue">Under review</span></p>
+              <p class="body">
+                A hybrid deep learning pipeline for keratoconus detection, comparing EfficientNetV2 backbones with and
+                without an explicit feature-selection stage.
+              </p>
+              <div class="tags">
+                <span class="tag">Medical Imaging</span>
+                <span class="tag">Computer Vision</span>
+                <span class="tag">Feature Selection</span>
+              </div>
+            </div>
+            <figure class="plate">
+              <svg viewBox="0 0 260 190" role="img" aria-label="Corneal topography rings with a selected feature subset">
+                <g fill="none" stroke="#1A1815">
+                  <ellipse cx="118" cy="95" rx="82" ry="60" stroke-width="0.9" opacity="0.3"/>
+                  <ellipse cx="115" cy="97" rx="63" ry="46" stroke-width="1" opacity="0.45"/>
+                  <ellipse cx="110" cy="101" rx="45" ry="33" stroke-width="1.1" opacity="0.6"/>
+                  <ellipse cx="105" cy="106" rx="28" ry="21" stroke-width="1.2" opacity="0.8"/>
+                  <ellipse cx="101" cy="110" rx="13" ry="10" stroke-width="1.4" stroke="#9C4221"/>
+                </g>
+                <circle cx="100" cy="111" r="4" fill="#9C4221"/>
+                <g opacity="0.55">
+                  <rect x="216" y="58" width="24" height="5" rx="2.5" fill="#1A1815"/>
+                  <rect x="216" y="72" width="14" height="5" rx="2.5" fill="#1A1815"/>
+                  <rect x="216" y="86" width="28" height="5" rx="2.5" fill="#9C4221"/>
+                  <rect x="216" y="100" width="10" height="5" rx="2.5" fill="#1A1815"/>
+                  <rect x="216" y="114" width="20" height="5" rx="2.5" fill="#9C4221"/>
+                </g>
+              </svg>
+              <figcaption>topography + selected features</figcaption>
+            </figure>
+          </div>
+        </article>
+      </div>
+
+      <!-- OMNIFLUX -->
+      <div class="row">
+        <div class="rail">
+          <span class="dot"></span><span class="tick"></span>
+          <span class="idx">01.4</span>
+        </div>
+        <article class="blk">
+          <div class="blk-in">
+            <div>
+              <h3>OMNIFLUX: A Pluggable End-to-End Multimodal RAG Pipeline</h3>
+              <p class="byline"><span class="me">Abhay Sastha S</span></p>
+              <p class="meta"><span class="venue">Poster, IndoML 2025</span> &nbsp;·&nbsp; BITS Hyderabad</p>
+              <p class="body">
+                A configurable five-stage ingestion pipeline — loading, extraction, embedding, vectorstore upsert,
+                cleanup — that pulls text, tables, charts, and images out of PDFs and CSVs, generates meta-questions to
+                improve retrieval, and upserts enriched chunks into Elasticsearch. Every stage is swappable from a YAML
+                config, and the same pipeline is exposed over a CLI, a REST API, and a Gradio UI.
+              </p>
+              <p class="refs">
+                <a href="https://www.linkedin.com/posts/abhay-sastha-s_hi-ill-be-presenting-our-poster-omniflux-activity-7407747564621488129-0MxN">poster</a>
+              </p>
+              <div class="tags">
+                <span class="tag">Multimodal RAG</span>
+                <span class="tag">Document Understanding</span>
+                <span class="tag">Retrieval</span>
+              </div>
+            </div>
+            <figure class="plate">
+              <svg viewBox="0 0 260 190" role="img" aria-label="Documents fanned into table, chart and image extractors then upserted to a vector store">
+                <rect x="18" y="52" width="46" height="62" rx="2" fill="none" stroke="#1A1815" stroke-width="1.1"/>
+                <g fill="#1A1815" opacity="0.3">
+                  <rect x="25" y="61" width="32" height="3.4" rx="1.7"/>
+                  <rect x="25" y="69" width="24" height="3.4" rx="1.7"/>
+                  <rect x="25" y="78" width="32" height="13" rx="1.7"/>
+                  <rect x="25" y="96" width="19" height="3.4" rx="1.7"/>
+                  <rect x="25" y="104" width="28" height="3.4" rx="1.7"/>
+                </g>
+                <g stroke="#1A1815" stroke-width="1" fill="none" opacity="0.4">
+                  <path d="M68 66 L104 46"/><path d="M68 83 L104 83"/><path d="M68 100 L104 120"/>
+                </g>
+                <g fill="none" stroke="#1A1815" stroke-width="1.1">
+                  <rect x="104" y="33" width="44" height="25" rx="2"/>
+                  <rect x="104" y="71" width="44" height="25" rx="2"/>
+                  <rect x="104" y="109" width="44" height="25" rx="2"/>
+                </g>
+                <g fill="#1A1815" font-family="'JetBrains Mono',monospace" font-size="8" text-anchor="middle">
+                  <text x="126" y="49">table</text><text x="126" y="87">chart</text><text x="126" y="125">image</text>
+                </g>
+                <g stroke="#9C4221" stroke-width="1.2" fill="none">
+                  <path d="M148 46 L188 74"/><path d="M148 83 L188 83"/><path d="M148 121 L188 92"/>
+                </g>
+                <g fill="none" stroke="#9C4221" stroke-width="1.3">
+                  <ellipse cx="216" cy="70" rx="27" ry="8"/>
+                  <path d="M189 70 L189 106"/><path d="M243 70 L243 106"/>
+                  <ellipse cx="216" cy="106" rx="27" ry="8"/>
+                  <ellipse cx="216" cy="88" rx="27" ry="8" opacity="0.45"/>
+                </g>
+              </svg>
+              <figcaption>five-stage ingestion</figcaption>
+            </figure>
+          </div>
+        </article>
+      </div>
+    </div>
+
+    <!-- ======================= 02 · PROJECTS ======================= -->
+    <div id="projects" class="panel" role="tabpanel">
+
+      <div class="row">
+        <div class="rail"><span class="dot"></span><span class="tick"></span></div>
+        <div class="layer">
+          <span class="lbl">Block 02</span>
+          <h2>Projects</h2>
+          <p class="note">
+            Model serving, computer vision, graph learning, reinforcement learning, and retrieval.
+          </p>
+        </div>
+      </div>
+
+      <!-- Qwen3-TTS -->
+      <div class="row">
+        <div class="rail">
+          <span class="dot"></span><span class="tick"></span>
+          <span class="idx">02.1</span>
+          <span class="add" style="bottom:22px">&#8853;</span>
+        </div>
+        <article class="blk">
+          <div class="blk-in">
+            <div>
+              <h3><a href="https://github.com/Abhay-Sastha-S/Qwen3-TTS-myfi">Qwen3-TTS-myfi — High-Concurrency Async TTS Serving</a></h3>
+              <p class="body">
+                A high-concurrency async TTS server that serves Qwen3-TTS-12Hz-1.7B-Base with pre-computed speaker
+                embeddings on a custom vLLM-Omni fork, tuned for latency under concurrent load. Shipped alongside the
+                frontend, backend, and ASR integration for MyFi's voice interface.
+              </p>
+              <p class="refs"><a href="https://github.com/Abhay-Sastha-S/Qwen3-TTS-myfi">code</a></p>
+              <div class="tags"><span class="tag">TTS</span><span class="tag">vLLM</span><span class="tag">Inference Serving</span></div>
+            </div>
+            <figure class="plate">
+              <svg viewBox="0 0 260 130" role="img" aria-label="Speech waveform">
+                <g stroke="#1A1815" stroke-width="3.4" stroke-linecap="round">
+                  <line x1="20" y1="58" x2="20" y2="72"/><line x1="34" y1="45" x2="34" y2="85"/>
+                  <line x1="48" y1="28" x2="48" y2="102"/><line x1="62" y1="52" x2="62" y2="78"/>
+                  <line x1="76" y1="16" x2="76" y2="114"/><line x1="90" y1="40" x2="90" y2="90"/>
+                </g>
+                <g stroke="#9C4221" stroke-width="3.4" stroke-linecap="round">
+                  <line x1="104" y1="10" x2="104" y2="120"/><line x1="118" y1="56" x2="118" y2="74"/>
+                  <line x1="132" y1="24" x2="132" y2="106"/>
+                </g>
+                <g stroke="#1A1815" stroke-width="3.4" stroke-linecap="round">
+                  <line x1="146" y1="44" x2="146" y2="86"/><line x1="160" y1="14" x2="160" y2="116"/>
+                  <line x1="174" y1="54" x2="174" y2="76"/><line x1="188" y1="34" x2="188" y2="96"/>
+                  <line x1="202" y1="60" x2="202" y2="70"/><line x1="216" y1="42" x2="216" y2="88"/>
+                  <line x1="230" y1="57" x2="230" y2="73"/><line x1="244" y1="62" x2="244" y2="68"/>
+                </g>
+              </svg>
+              <figcaption>streamed synthesis</figcaption>
+            </figure>
+          </div>
+        </article>
+      </div>
+
+      <!-- Charto -->
+      <div class="row">
+        <div class="rail">
+          <span class="dot"></span><span class="tick"></span>
+          <span class="idx">02.2</span>
+          <span class="add" style="bottom:22px">&#8853;</span>
+        </div>
+        <article class="blk">
+          <div class="blk-in">
+            <div>
+              <h3><a href="https://github.com/Abhay-Sastha-S/charto">Charto — Structured Data Extraction from Chart Images</a></h3>
+              <p class="body">
+                An end-to-end pipeline that recovers JSON values for unlabelled data points in bar, line, and scatter
+                charts. I ported the original Caffe2 model to a manual PyTorch Detectron2 implementation of Faster R-CNN
+                with FPN, trained on PlotQA, and lifted accuracy further with systematic detection and PyOCR-based
+                extraction — reaching 80–85%, comparable to SOTA methods such as LlamaParse.
+              </p>
+              <p class="refs"><a href="https://github.com/Abhay-Sastha-S/charto">code</a></p>
+              <div class="tags"><span class="tag">Computer Vision</span><span class="tag">Object Detection</span><span class="tag">OCR</span></div>
+            </div>
+            <figure class="plate">
+              <svg viewBox="0 0 260 150" role="img" aria-label="Bar chart with detection boxes emitting JSON">
+                <g fill="#1A1815" opacity="0.16">
+                  <rect x="34" y="72" width="24" height="54"/><rect x="72" y="42" width="24" height="84"/>
+                  <rect x="110" y="88" width="24" height="38"/><rect x="148" y="58" width="24" height="68"/>
+                </g>
+                <g fill="none" stroke="#9C4221" stroke-width="1.1" stroke-dasharray="3 2.5">
+                  <rect x="31" y="69" width="30" height="60"/><rect x="69" y="39" width="30" height="90"/>
+                  <rect x="107" y="85" width="30" height="44"/><rect x="145" y="55" width="30" height="74"/>
+                </g>
+                <line x1="24" y1="129" x2="186" y2="129" stroke="#1A1815" stroke-width="1.1"/>
+                <line x1="24" y1="22" x2="24" y2="129" stroke="#1A1815" stroke-width="1.1"/>
+                <g fill="#1A1815" font-family="'JetBrains Mono',monospace" font-size="9" opacity="0.75">
+                  <text x="198" y="58">{</text><text x="204" y="72">"x":…</text>
+                  <text x="204" y="86">"y":…</text><text x="198" y="100">}</text>
+                </g>
+              </svg>
+              <figcaption>chart → json</figcaption>
+            </figure>
+          </div>
+        </article>
+      </div>
+
+      <!-- DI-GNN -->
+      <div class="row">
+        <div class="rail">
+          <span class="dot"></span><span class="tick"></span>
+          <span class="idx">02.3</span>
+          <span class="add" style="bottom:22px">&#8853;</span>
+        </div>
+        <article class="blk">
+          <div class="blk-in">
+            <div>
+              <h3><a href="https://github.com/Abhay-Sastha-S/GNN-PL-Docking/">DI-GNN — Dynamic Interaction Graphs for Protein–Ligand Docking</a></h3>
+              <p class="body">
+                After implementing SOTA methods such as MedusaGraph and EquiBind to understand where existing GNN
+                docking approaches break down, I designed and built a proof of concept for DI-GNN: an approach that
+                integrates dynamic interaction graphs with RL-guided pose refinement and physics-informed models,
+                aiming at more accurate and generalizable docking for drug discovery.
+              </p>
+              <p class="refs"><a href="https://github.com/Abhay-Sastha-S/GNN-PL-Docking/">code</a></p>
+              <div class="tags"><span class="tag">Graph Neural Networks</span><span class="tag">Reinforcement Learning</span><span class="tag">Drug Discovery</span></div>
+            </div>
+            <figure class="plate">
+              <svg viewBox="0 0 260 150" role="img" aria-label="Protein and ligand nodes joined by dynamic interaction edges">
+                <g stroke="#1A1815" stroke-width="1.1" opacity="0.5">
+                  <line x1="52" y1="42" x2="96" y2="30"/><line x1="96" y1="30" x2="134" y2="60"/>
+                  <line x1="134" y1="60" x2="104" y2="98"/><line x1="104" y1="98" x2="58" y2="86"/>
+                  <line x1="58" y1="86" x2="52" y2="42"/>
+                </g>
+                <g stroke="#9C4221" stroke-width="1.1" stroke-dasharray="3.5 3">
+                  <line x1="96" y1="30" x2="182" y2="48"/><line x1="104" y1="98" x2="152" y2="114"/>
+                </g>
+                <g stroke="#1A1815" stroke-width="1.1" opacity="0.5">
+                  <line x1="182" y1="48" x2="196" y2="96"/><line x1="196" y1="96" x2="152" y2="114"/>
+                </g>
+                <g fill="#1A1815">
+                  <circle cx="52" cy="42" r="5"/><circle cx="96" cy="30" r="5"/><circle cx="134" cy="60" r="6.5"/>
+                  <circle cx="104" cy="98" r="5"/><circle cx="58" cy="86" r="5"/>
+                </g>
+                <g fill="#F2ECE2" stroke="#9C4221" stroke-width="1.6">
+                  <circle cx="182" cy="48" r="6"/><circle cx="196" cy="96" r="6"/><circle cx="152" cy="114" r="6"/>
+                </g>
+              </svg>
+              <figcaption>dynamic interaction edges</figcaption>
+            </figure>
+          </div>
+        </article>
+      </div>
+
+      <!-- GRPO -->
+      <div class="row">
+        <div class="rail">
+          <span class="dot"></span><span class="tick"></span>
+          <span class="idx">02.4</span>
+          <span class="add" style="bottom:22px">&#8853;</span>
+        </div>
+        <article class="blk">
+          <div class="blk-in">
+            <div>
+              <h3><a href="https://github.com/Abhay-Sastha-S/jpgs-crypto">XML-CoT GRPO — RL Fine-Tuning for Structured Reasoning</a></h3>
+              <p class="body">
+                Fine-tuned Qwen2.5-3B-Instruct with a GRPO-based reinforcement learning framework, using custom reward
+                functions that enforce both numerical accuracy and strict output formatting on GSM8K. Integrated LoRA
+                adapters with Unsloth's FastLanguageModel and vLLM for efficient inference.
+              </p>
+              <p class="refs"><a href="https://github.com/Abhay-Sastha-S/jpgs-crypto">code</a></p>
+              <div class="tags"><span class="tag">GRPO</span><span class="tag">LoRA</span><span class="tag">Reasoning</span></div>
+            </div>
+            <figure class="plate">
+              <svg viewBox="0 0 260 150" role="img" aria-label="Reward curve above a chain of reasoning steps">
+                <path d="M24 86 C 76 82, 108 56, 156 44 S 226 28, 240 25" fill="none" stroke="#9C4221" stroke-width="1.6"/>
+                <g fill="#9C4221">
+                  <circle cx="24" cy="86" r="2.8"/><circle cx="156" cy="44" r="2.8"/><circle cx="240" cy="25" r="2.8"/>
+                </g>
+                <text x="24" y="18" fill="#1A1815" font-family="'JetBrains Mono',monospace" font-size="9" opacity="0.7">reward</text>
+                <g stroke="#1A1815" stroke-width="1" opacity="0.4">
+                  <line x1="52" y1="122" x2="82" y2="122"/><line x1="110" y1="122" x2="140" y2="122"/>
+                  <line x1="168" y1="122" x2="198" y2="122"/>
+                </g>
+                <g fill="none" stroke="#1A1815" stroke-width="1.1">
+                  <rect x="26" y="110" width="26" height="24" rx="2"/>
+                  <rect x="82" y="110" width="26" height="24" rx="2"/>
+                  <rect x="140" y="110" width="26" height="24" rx="2"/>
+                  <rect x="198" y="110" width="26" height="24" rx="2"/>
+                </g>
+              </svg>
+              <figcaption>reward-shaped chain</figcaption>
+            </figure>
+          </div>
+        </article>
+      </div>
+
+      <!-- Coeus -->
+      <div class="row">
+        <div class="rail">
+          <span class="dot"></span><span class="tick"></span>
+          <span class="idx">02.5</span>
+          <span class="add" style="bottom:22px">&#8853;</span>
+        </div>
+        <article class="blk">
+          <div class="blk-in">
+            <div>
+              <h3><a href="https://github.com/Abhay-Sastha-S/Coeus">Coeus — Natural Language to SQL over Vector + Graph RAG</a></h3>
+              <p class="body">
+                A natural-language-to-SQL workflow built on a combined vector and graph RAG system. It fetches the
+                database schema, attaches context to tables and columns, maps their relationships into a Neo4j graph,
+                and resolves user queries through sentence transformers — targeting the hallucination, token-limit,
+                data-privacy, and user-intent failures that plague naive text-to-SQL.
+              </p>
+              <p class="refs"><a href="https://github.com/Abhay-Sastha-S/Coeus">code</a></p>
+              <div class="tags"><span class="tag">Graph RAG</span><span class="tag">Neo4j</span><span class="tag">Text-to-SQL</span></div>
+            </div>
+            <figure class="plate">
+              <svg viewBox="0 0 260 150" role="img" aria-label="Database schema mapped into a graph then into SQL">
+                <g fill="none" stroke="#1A1815" stroke-width="1.2">
+                  <ellipse cx="52" cy="52" rx="26" ry="8"/>
+                  <path d="M26 52 L26 92"/><path d="M78 52 L78 92"/>
+                  <ellipse cx="52" cy="92" rx="26" ry="8"/>
+                  <ellipse cx="52" cy="72" rx="26" ry="8" opacity="0.45"/>
+                </g>
+                <path d="M84 72 L114 72" stroke="#9C4221" stroke-width="1.4"/>
+                <g stroke="#1A1815" stroke-width="1.1" opacity="0.5">
+                  <line x1="140" y1="40" x2="182" y2="62"/><line x1="182" y1="62" x2="162" y2="106"/>
+                  <line x1="162" y1="106" x2="124" y2="90"/><line x1="124" y1="90" x2="140" y2="40"/>
+                  <line x1="182" y1="62" x2="224" y2="46"/><line x1="224" y1="46" x2="230" y2="96"/>
+                  <line x1="230" y1="96" x2="162" y2="106"/>
+                </g>
+                <g fill="#1A1815">
+                  <circle cx="140" cy="40" r="5"/><circle cx="182" cy="62" r="6"/><circle cx="162" cy="106" r="5"/>
+                  <circle cx="124" cy="90" r="5"/><circle cx="224" cy="46" r="5"/><circle cx="230" cy="96" r="5"/>
+                </g>
+                <text x="130" y="140" fill="#9C4221" font-family="'JetBrains Mono',monospace" font-size="9">SELECT …</text>
+              </svg>
+              <figcaption>schema → graph → sql</figcaption>
+            </figure>
+          </div>
+        </article>
+      </div>
+
+      <!-- Trackem -->
+      <div class="row">
+        <div class="rail">
+          <span class="dot"></span><span class="tick"></span>
+          <span class="idx">02.6</span>
+          <span class="add" style="bottom:22px">&#8853;</span>
+        </div>
+        <article class="blk">
+          <div class="blk-in">
+            <div>
+              <h3><a href="https://github.com/Abhay-Sastha-S/Trackem">Trackem — Cross-Camera Multi-Feed Human Tracking</a></h3>
+              <p class="body">
+                A cross-camera, multi-feed human tracking system built on YOLO detection and Re-ID embeddings, with
+                CUDA-targeted optimizations to keep multiple simultaneous feeds real time.
+              </p>
+              <p class="refs"><a href="https://github.com/Abhay-Sastha-S/Trackem">code</a></p>
+              <div class="tags"><span class="tag">Re-Identification</span><span class="tag">YOLO</span><span class="tag">CUDA</span></div>
+            </div>
+            <figure class="plate">
+              <svg viewBox="0 0 260 150" role="img" aria-label="One identity matched across three camera feeds">
+                <g fill="none" stroke="#1A1815" stroke-width="0.9" opacity="0.35">
+                  <rect x="16" y="26" width="72" height="98" rx="2"/>
+                  <rect x="94" y="26" width="72" height="98" rx="2"/>
+                  <rect x="172" y="26" width="72" height="98" rx="2"/>
+                </g>
+                <g fill="none" stroke="#9C4221" stroke-width="1.3">
+                  <rect x="36" y="56" width="26" height="50" rx="2"/>
+                  <rect x="118" y="66" width="26" height="50" rx="2"/>
+                  <rect x="192" y="50" width="26" height="50" rx="2"/>
+                </g>
+                <g fill="#9C4221" font-family="'JetBrains Mono',monospace" font-size="8" text-anchor="middle">
+                  <text x="49" y="50">id 7</text><text x="131" y="60">id 7</text><text x="205" y="44">id 7</text>
+                </g>
+                <g stroke="#1A1815" stroke-width="1" stroke-dasharray="3 3" opacity="0.6">
+                  <path d="M62 82 L118 92"/><path d="M144 92 L192 76"/>
+                </g>
+              </svg>
+              <figcaption>identity across feeds</figcaption>
+            </figure>
+          </div>
+        </article>
+      </div>
+
+      <!-- KrishiGyaan -->
+      <div class="row">
+        <div class="rail">
+          <span class="dot"></span><span class="tick"></span>
+          <span class="idx">02.7</span>
+          <span class="add" style="bottom:22px">&#8853;</span>
+        </div>
+        <article class="blk">
+          <div class="blk-in">
+            <div>
+              <h3><a href="https://github.com/Abhay-Sastha-S/KrishiGyaan">KrishiGyaan — Crop Rotation Recommendation with Deep RL</a></h3>
+              <p class="body">
+                A crop rotation recommendation system driven by a DQN agent trained on real-world parameters — soil
+                nutrient levels, moisture, soil type, and more — to suggest rotations that sustain yield without
+                depleting the soil.
+              </p>
+              <p class="refs"><a href="https://github.com/Abhay-Sastha-S/KrishiGyaan">code</a></p>
+              <div class="tags"><span class="tag">Deep RL</span><span class="tag">DQN</span><span class="tag">Agriculture</span></div>
+            </div>
+            <figure class="plate">
+              <svg viewBox="0 0 260 150" role="img" aria-label="Cyclic crop rotation policy">
+                <path d="M130 32 A 48 48 0 1 1 90 55" fill="none" stroke="#1A1815" stroke-width="1.5"/>
+                <polygon points="86,44 96,60 79,63" fill="#9C4221"/>
+                <g fill="#9C4221">
+                  <circle cx="130" cy="32" r="6"/><circle cx="172" cy="104" r="6"/><circle cx="88" cy="104" r="6"/>
+                </g>
+                <g fill="#1A1815" opacity="0.2">
+                  <rect x="40" y="132" width="180" height="4" rx="2"/>
+                  <rect x="40" y="141" width="130" height="4" rx="2"/>
+                </g>
+              </svg>
+              <figcaption>rotation policy</figcaption>
+            </figure>
+          </div>
+        </article>
+      </div>
+
+      <!-- Other -->
+      <div class="row">
+        <div class="rail">
+          <span class="dot hollow"></span><span class="tick"></span>
+          <span class="idx">02.8</span>
+        </div>
+        <article class="blk">
+          <div>
+            <h3>Other Work</h3>
+            <p class="body">Smaller projects and tools, most of them on <a href="https://github.com/Abhay-Sastha-S">GitHub</a>:</p>
+            <ul style="margin:10px 0 0; padding-left:17px;">
+              <li style="margin-bottom:5px;"><a href="https://github.com/Abhay-Sastha-S/SceneSet">SceneSet</a> — bounding-box-driven background removal API using U²-Net, with S3-backed storage.</li>
+              <li style="margin-bottom:5px;"><a href="https://github.com/Abhay-Sastha-S/RAG-GPT">RAG-GPT</a> — a retrieval-augmented legal chatbot.</li>
+              <li style="margin-bottom:5px;"><a href="https://github.com/Abhay-Sastha-S/Metadata-EMG-app">Metadata-EMG-app</a> — the Flutter companion app for the low-cost EMG biofeedback device.</li>
+              <li style="margin-bottom:5px;"><a href="https://github.com/Abhay-Sastha-S/Datum">Datum</a> — a one-line app analytics package.</li>
+              <li style="margin-bottom:5px;"><a href="https://github.com/Abhay-Sastha-S/MailSend">MailSend</a> — low-cost personalized bulk email, aimed at MSMEs.</li>
+              <li><a href="https://github.com/Abhay-Sastha-S/tds-p2">tds-p2</a> — an LLM-driven pipeline that analyzes and summarizes arbitrary CSV files.</li>
+            </ul>
+          </div>
+        </article>
+      </div>
+    </div>
+
+    <!-- ======================= 03 · EXPERIENCE ======================= -->
+    <div id="experience" class="panel" role="tabpanel">
+
+      <div class="row">
+        <div class="rail"><span class="dot"></span><span class="tick"></span></div>
+        <div class="layer">
+          <span class="lbl">Block 03</span>
+          <h2>Experience</h2>
+          <p class="note">Education, roles, and the things I have shipped from each.</p>
+        </div>
+      </div>
+
+      <!-- Education -->
+      <div class="row">
+        <div class="rail">
+          <span class="dot"></span><span class="tick"></span>
+          <span class="idx">03.1</span>
+          <span class="add" style="bottom:14px">&#8853;</span>
+        </div>
+        <section class="cv">
+          <p class="meta" style="margin-bottom:16px;">Education</p>
+
+          <div class="cv-item">
+            <div class="cv-top">
+              <h3 class="cv-role">B.Tech, Computer Science Engineering</h3>
+              <span class="cv-when">Expected July 2026</span>
+            </div>
+            <p class="cv-org">Vellore Institute of Technology <span class="where">· Vellore, TN</span></p>
+          </div>
+
+          <div class="cv-item">
+            <div class="cv-top">
+              <h3 class="cv-role">BS, Data Science and Applications</h3>
+              <span class="cv-when">Expected 2026</span>
+            </div>
+            <p class="cv-org">Indian Institute of Technology, Madras <span class="where">· Chennai, TN</span></p>
+          </div>
+
+          <div class="cv-item">
+            <div class="cv-top">
+              <h3 class="cv-role">Additional Coursework</h3>
+            </div>
+            <ul>
+              <li>CS6350 — Computer Vision, VPLAB, IIT Madras</li>
+              <li>FCSE753 — Automatic Speech Recognition, Preethi Jyothi, IIT Bombay</li>
+            </ul>
+          </div>
+        </section>
+      </div>
+
+      <!-- Roles -->
+      <div class="row">
+        <div class="rail">
+          <span class="dot"></span><span class="tick"></span>
+          <span class="idx">03.2</span>
+          <span class="add" style="bottom:14px">&#8853;</span>
+        </div>
+        <section class="cv">
+          <p class="meta" style="margin-bottom:16px;">Roles</p>
+
+          <div class="cv-item">
+            <div class="cv-top">
+              <h3 class="cv-role">Machine Learning Intern</h3>
+              <span class="cv-when">Dec 2025 — Present</span>
+            </div>
+            <p class="cv-org">MyFi, TIFIN India <span class="where">· Bangalore, KA</span></p>
+            <ul>
+              <li>Built the frontend, backend, and ASR/TTS integration for MyFi's voice interface, serving a custom
+                  Qwen3-TTS voice on a latency-optimized vLLM-Omni server
+                  (<a href="https://github.com/Abhay-Sastha-S/Qwen3-TTS-myfi">code</a>).</li>
+              <li>Manage and extend the multi-agent orchestration stack behind the financial chatbot, including a
+                  dedicated Math agent that removes the dependency on LLM arithmetic.</li>
+              <li>Built an evaluation framework and test bench for the agentic chatbots deployed at Motilal, Axis,
+                  SBI, and MyFi.</li>
+            </ul>
+          </div>
+
+          <div class="cv-item">
+            <div class="cv-top">
+              <h3 class="cv-role">Machine Learning Intern</h3>
+              <span class="cv-when">Apr — Aug 2025</span>
+            </div>
+            <p class="cv-org">MyFi, TIFIN India <span class="where">· Bangalore, KA</span></p>
+            <ul>
+              <li>Developed a hierarchical graph RAG with attribute extraction and higher-order nodes for financial documents.</li>
+              <li>Fine-tuned LLMs, embedding models, and rerankers over curated datasets using instruction tuning, DPO,
+                  LoRA, QLoRA, and negative mining.</li>
+              <li>Ran knowledge distillation from Sarvam-M to Qwen-14B via response matching for stronger Indic
+                  capability, then from Qwen-14B to 3B using copy-weight initialization to cut inference time.</li>
+              <li>Redesigned the RAG system with a Tip-of-the-Tongue approach, improving Success@10 from 35% to 85% on a
+                  manually curated golden-label dataset.</li>
+              <li>Refactored the inference pipeline in Go, cutting latency from 250ms to 160ms and lifting throughput
+                  from 10 to 60 RPS.</li>
+              <li>Implemented guardrails on a custom architecture built from fine-tuned sub-100M Llama models.</li>
+              <li>Created a multimodal RAG package using Qwen Omni and a VLM, with purpose-built table, chart, and image
+                  extraction via PyOCR and R-CNN FPN, plus a specialized <code>.pang</code> XML/Markdown format for
+                  custom chunking and visualization of ingested documents.</li>
+              <li>Deployed this work to MyFi, the SBI Mutual Assist WhatsApp bot, and the DSP chatbot.</li>
+            </ul>
+          </div>
+
+          <div class="cv-item">
+            <div class="cv-top">
+              <h3 class="cv-role">Student Researcher</h3>
+              <span class="cv-when">Aug 2024 — Present</span>
+            </div>
+            <p class="cv-org">VIT Vellore, SAS Lab <span class="where">· Vellore, TN</span></p>
+            <ul>
+              <li>Work with Prof. Prabhujit Mohapatra (School of Sciences) on metaheuristic algorithms for image
+                  thresholding. The collaboration has produced two publications: WALO and OBL–CPSOGSA.</li>
+            </ul>
+          </div>
+
+          <div class="cv-item">
+            <div class="cv-top">
+              <h3 class="cv-role">Project Lead Intern</h3>
+              <span class="cv-when">Dec 2023</span>
+            </div>
+            <p class="cv-org">Cre-AID Labs <span class="where">· Bangalore, KA</span></p>
+            <ul>
+              <li>Prototyped and tested an EMG biofeedback device at 98% lower cost than leading market alternatives.</li>
+              <li>Integrated a live voice detection and actuation module while reworking the app's UI/UX.</li>
+            </ul>
+          </div>
+
+          <div class="cv-item">
+            <div class="cv-top">
+              <h3 class="cv-role">Research and Development Intern</h3>
+              <span class="cv-when">Jul 2023</span>
+            </div>
+            <p class="cv-org">Cre-AID Labs <span class="where">· Bangalore, KA</span></p>
+            <ul>
+              <li>Deployed a real-time hotword-driven voice detection and actuation module on a low-resource device.</li>
+              <li>Built a hand-size measurement system with PyTorch, Detectron, and U²-Net, cutting measurement time by three quarters.</li>
+              <li>Established a crack and abnormality detection framework, reducing quality-check time by 86% (13 minutes).</li>
+              <li>Designed a custom GATT-based Bluetooth protocol for the app to talk to their devices.</li>
+            </ul>
+          </div>
+
+          <div class="cv-item">
+            <div class="cv-top">
+              <h3 class="cv-role">Founder</h3>
+              <span class="cv-when">Mar 2023 — Jun 2024</span>
+            </div>
+            <p class="cv-org">Turn It Online (TIO) <span class="where">· Vellore, TN</span></p>
+            <ul>
+              <li>A one-stop service for businesses establishing an online presence, serving clients across India and
+                  still supporting two live websites.</li>
+            </ul>
+          </div>
+        </section>
+      </div>
+
+      <!-- Workshops -->
+      <div class="row">
+        <div class="rail">
+          <span class="dot"></span><span class="tick"></span>
+          <span class="idx">03.3</span>
+          <span class="add" style="bottom:14px">&#8853;</span>
+        </div>
+        <section class="cv">
+          <p class="meta" style="margin-bottom:16px;">Workshops &amp; Certifications</p>
+          <div class="cv-item">
+            <ul style="margin-top:0">
+              <li>Poster presentation — OMNIFLUX, IndoML 2025, BITS Hyderabad
+                  (<a href="https://www.linkedin.com/posts/abhay-sastha-s_hi-ill-be-presenting-our-poster-omniflux-activity-7407747564621488129-0MxN">announcement</a>)</li>
+              <li>Foundations in Data Science — IIT Madras</li>
+              <li>Genomic Data Analysis on AWS Omics — IBAB, Bangalore</li>
+              <li>Fine-tuning and Evaluation — DeepLearning.AI</li>
+              <li>Quantization in Depth — Hugging Face &amp; DeepLearning.AI</li>
+            </ul>
+          </div>
+        </section>
+      </div>
+
+      <!-- Skills -->
+      <div class="row">
+        <div class="rail">
+          <span class="dot hollow"></span><span class="tick"></span>
+          <span class="idx">03.4</span>
+        </div>
+        <section class="cv">
+          <p class="meta" style="margin-bottom:16px;">Skills</p>
+          <dl class="skills">
+            <div class="skill"><dt>Libraries</dt><dd>PyTorch, OpenCV, Keras, YOLO, MediaPipe, NLTK, scikit-learn, pandas, Matplotlib, NumPy</dd></div>
+            <div class="skill"><dt>Languages</dt><dd>C, C++, Java, Python, Dart, R, Go, HTML, CSS, JavaScript, MySQL</dd></div>
+            <div class="skill"><dt>Tooling</dt><dd>Pinecone, Elasticsearch, MATLAB, Docker, GitHub, Hugging Face, AWS, GCP, Figma</dd></div>
+            <div class="skill"><dt>Spoken</dt><dd>English, Hindi, Tamil, Malayalam, Sanskrit</dd></div>
+          </dl>
+        </section>
+      </div>
+    </div>
+
+    <!-- ======================= OUTPUT ======================= -->
+    <div class="row">
+      <div class="rail"><span class="dot hollow"></span><span class="tick"></span></div>
+      <footer class="out">
+        <div class="cap">Output</div>
+        <p class="colophon">
+          Set in Source Serif and JetBrains Mono. Laid out as a residual stream — every section branches off the spine
+          and merges back at&nbsp;⊕. Built by hand; no framework.
+        </p>
+      </footer>
+    </div>
+
+  </div>
+</div>
+
+<script>
+  function route(evt, id) {
+    document.querySelectorAll('.panel').forEach(function (p) { p.classList.remove('on'); });
+    document.querySelectorAll('.tab').forEach(function (t) {
+      t.classList.remove('on');
+      t.setAttribute('aria-selected', 'false');
+    });
+    document.getElementById(id).classList.add('on');
+    evt.currentTarget.classList.add('on');
+    evt.currentTarget.setAttribute('aria-selected', 'true');
+  }
+</script>
+</body>
+
+</html>
