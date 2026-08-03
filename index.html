@@ -436,43 +436,39 @@
           </p>
 
           <template id="full-story" data-title="How I got here">
-            <h4>Perception, on hardware &middot; 2023</h4>
-            <p>At Cre-AID Labs I worked on real-time hotword voice detection and actuation running on a low-resource
-               device, a hand-measurement system built with PyTorch, Detectron and U²-Net, a crack and abnormality
-               detection framework that cut quality-check time by 86%, and an EMG biofeedback device prototyped at
-               98% below the cost of market alternatives — plus the GATT Bluetooth protocol the app used to talk to
-               it. All of it was the same shape of problem: read a physical signal, decide, make something happen.</p>
+            <h4>Sense, decide, act &middot; 2023</h4>
+            <p>My first real work was not machine learning in the abstract — it was a device that had to notice
+               something and respond to it. At Cre-AID Labs I built real-time hotword detection driving actuation on
+               low-resource hardware, and prototyped an EMG biofeedback device. The loop <em>was</em> the job: read a
+               physical signal, decide, make something happen.</p>
 
-            <h4>Vision as its own problem &middot; 2024</h4>
-            <p>Charto grew out of that — porting a Caffe2 model to a hand-written Detectron2 Faster R-CNN with FPN to
-               recover structured values from chart images, and getting to 80–85% with systematic detection and OCR.
-               Trackem did cross-camera re-identification across simultaneous feeds. Coursework filled in the theory:
-               computer vision at IIT Madras, automatic speech recognition at IIT Bombay.</p>
+            <h4>Perception as its own problem &middot; 2024</h4>
+            <p>Then I went narrower, into the perception half on its own. Charto is the clearest example — a
+               hand-written Detectron2 Faster R-CNN with FPN that recovers structured values from chart images. No
+               actuation and no decisions; just getting reliable signal out of pixels.</p>
 
-            <h4>Language &middot; 2025</h4>
-            <p>At MyFi I moved to LLMs — fine-tuning and distillation (instruction tuning, DPO, LoRA, QLoRA, and a
-               Sarvam-M → Qwen-14B → 3B chain), a hierarchical graph RAG for financial documents, and a retrieval
-               redesign that took Success@10 from 35% to 85%.</p>
-            <p>The part that mattered to me was that the earlier work came back. The multimodal RAG package I built
-               needed table, chart and image extraction — the same computer vision problem as Charto, now serving as
-               an input stage for a language model instead of an end in itself. Audio returned the same way: a custom
-               TTS voice served on a vLLM-Omni fork, with ASR wired in behind a voice interface.</p>
+            <h4>Language, and the return of the old work &middot; 2025</h4>
+            <p>At MyFi I moved to LLMs — fine-tuning, distillation, retrieval. What I did not expect was perception
+               coming back as a <em>component</em>. The multimodal RAG system I built needed table, chart and image
+               extraction, which is Charto's problem re-scoped: no longer an end in itself, now an input stage for a
+               language model. Audio returned the same way, as a TTS voice served behind a chat interface. Modalities
+               I had treated as separate projects turned out to be ports into one reasoning system.</p>
 
-            <h4>Agents &middot; 2026</h4>
-            <p>Now I build the agentic layer of an AI wealth advisor — multi-agent orchestration, routing, evaluation
-               harnesses, and grounding answers in a user's actual portfolio. It is the first work where the output is
-               an action rather than a string, even if the actions are still tool calls rather than motion. Alongside
-               it I research Mixture-of-Experts architectures: ExpertAttention is about the fact that a router commits
-               to how it will combine expert outputs before any expert has run.</p>
+            <h4>The output becomes a decision &middot; 2026</h4>
+            <p>The current work is the agentic layer of a wealth advisor — orchestration, routing, and grounding
+               answers in a user's real portfolio. What changed is the <em>type</em> of the output: the system picks
+               an action instead of emitting a string, even if those actions are still tool calls. Alongside it I
+               research MoE architectures, where ExpertAttention is about a router committing to how it will combine
+               expert outputs before any expert has run.</p>
 
-            <h4>Where this is going</h4>
-            <p>The system I want to work on holds every modality at once — vision, audio, language and state as
-               input, actions as output, with a learned model of how the world responds. That is what world models
-               and robot policies are.</p>
-            <p class="aside">I am not there yet, and I would rather say so plainly. The closest I have come is
-               RL-guided pose refinement in DI-GNN and a DQN policy in KrishiGyaan, both small and both in
-               simulation. What I do have is the pieces — perception, speech, language, and now action selection —
-               and a clear enough view of the gap to know what to build next.</p>
+            <h4>What is missing</h4>
+            <p>I have had these one at a time: perception without decisions, language without a body, actions without
+               a model of the world. The system I want to work on holds them together — vision, audio, language and
+               state going in, actions coming out, against a learned model of how the world responds.</p>
+            <p class="aside">The honest gap: my only real action-selection work is RL-guided pose refinement in
+               DI-GNN and a DQN policy in KrishiGyaan, both small and both in simulation. What I do have is the
+               perception, speech and language pieces, and a specific idea of what I am missing. That is a direction,
+               not a claim to have arrived.</p>
           </template>
         </div>
         <nav class="links">
