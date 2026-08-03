@@ -490,16 +490,29 @@
     <!-- ======================= TABS ======================= -->
     <div class="row tabbar-row">
       <div class="tabbar" role="tablist">
-        <button class="tab on" role="tab" aria-selected="true"  onclick="route(event,'research')">Research</button>
-        <button class="tab"    role="tab" aria-selected="false" onclick="route(event,'projects')">Projects</button>
-        <button class="tab"    role="tab" aria-selected="false" onclick="route(event,'clauding')">Clauding</button>
-        <button class="tab"    role="tab" aria-selected="false" onclick="route(event,'blogs')">Blogs</button>
-        <button class="tab"    role="tab" aria-selected="false" onclick="route(event,'experience')">Experience</button>
-        <button class="tab"    role="tab" aria-selected="false" onclick="route(event,'education')">Education</button>
+        <button class="tab on" role="tab" aria-selected="true" onclick="route(event,'research')">Research</button>
+        <button class="tab" role="tab" aria-selected="false" onclick="route(event,'projects')">Projects</button>
+        <button class="tab" role="tab" aria-selected="false" onclick="route(event,'experience')">Experience</button>
+        <button class="tab" role="tab" aria-selected="false" onclick="route(event,'education')">Education</button>
+        <button class="tab" role="tab" aria-selected="false" onclick="route(event,'clauding')">Clauding</button>
+        <button class="tab" role="tab" aria-selected="false" onclick="route(event,'blogs')">Blogs</button>
       </div>
     </div>
 
-    <!-- ======================= 01 · RESEARCH ======================= -->
+    
+
+    
+
+    
+
+
+    
+
+    
+
+    
+
+    <!-- ======================= RESEARCH ======================= -->
     <div id="research" class="panel on" role="tabpanel">
 
       <div class="row">
@@ -742,7 +755,7 @@
       </div>
     </div>
 
-    <!-- ======================= 02 · PROJECTS ======================= -->
+    <!-- ======================= PROJECTS ======================= -->
     <div id="projects" class="panel" role="tabpanel">
 
       <div class="row">
@@ -1078,6 +1091,203 @@
       </div>
     </div>
 
+    <!-- ======================= EXPERIENCE ======================= -->
+    <div id="experience" class="panel" role="tabpanel">
+
+      <div class="row">
+        <div class="layer">
+          <h2>Experience</h2>
+          <p class="note">Where I have worked, and what I built while I was there.</p>
+        </div>
+      </div>
+
+      <!-- Roles -->
+      <div class="row">
+        <section class="cv">
+          <p class="meta" style="margin-bottom:16px;">Roles</p>
+
+          <div class="cv-item">
+            <div class="cv-top">
+              <h3 class="cv-role">AI Engineer</h3>
+              <span class="cv-when">Jun 2026 — Present</span>
+            </div>
+            <p class="cv-org">MyFi, TIFIN India <span class="where">· Bangalore, KA</span></p>
+            <ul>
+              <li>Build the agentic systems behind an AI wealth advisor for Indian retail investors — multi-agent
+                  orchestration, intent routing, and grounding answers in a user's actual portfolio.</li>
+              <li>Converted to full time in June 2026 after roughly a year interning on the same team.</li>
+            </ul>
+          </div>
+
+          <div class="cv-item">
+            <div class="cv-top">
+              <h3 class="cv-role">Machine Learning Intern</h3>
+              <span class="cv-when">Dec 2025 — Jun 2026</span>
+            </div>
+            <p class="cv-org">MyFi, TIFIN India <span class="where">· Bangalore, KA</span></p>
+            <ul>
+              <li>Built the frontend, backend, and ASR/TTS integration for MyFi's voice interface, serving a custom
+                  Qwen3-TTS voice on a latency-optimized vLLM-Omni server
+                  (<a href="https://github.com/Abhay-Sastha-S/Qwen3-TTS-myfi">code</a>).</li>
+              <li>Manage and extend the multi-agent orchestration stack behind the financial chatbot, including a
+                  dedicated Math agent that removes the dependency on LLM arithmetic.</li>
+              <li>Built an evaluation framework and test bench for the agentic chatbots deployed at Motilal, Axis,
+                  SBI, and MyFi.</li>
+            </ul>
+          </div>
+
+          <div class="cv-item">
+            <div class="cv-top">
+              <h3 class="cv-role">Machine Learning Intern</h3>
+              <span class="cv-when">Apr — Aug 2025</span>
+            </div>
+            <p class="cv-org">MyFi, TIFIN India <span class="where">· Bangalore, KA</span></p>
+            <ul>
+              <li>Developed a hierarchical graph RAG with attribute extraction and higher-order nodes for financial documents.</li>
+              <li>Fine-tuned LLMs, embedding models, and rerankers over curated datasets using instruction tuning, DPO,
+                  LoRA, QLoRA, and negative mining.</li>
+              <li>Ran knowledge distillation from Sarvam-M to Qwen-14B via response matching for stronger Indic
+                  capability, then from Qwen-14B to 3B using copy-weight initialization to cut inference time.</li>
+              <li>Redesigned the RAG system with a Tip-of-the-Tongue approach, improving Success@10 from 35% to 85% on a
+                  manually curated golden-label dataset.</li>
+              <li>Refactored the inference pipeline in Go, cutting latency from 250ms to 160ms and lifting throughput
+                  from 10 to 60 RPS.</li>
+              <li>Implemented guardrails on a custom architecture built from fine-tuned sub-100M Llama models.</li>
+              <li>Created a multimodal RAG package using Qwen Omni and a VLM, with purpose-built table, chart, and image
+                  extraction via PyOCR and R-CNN FPN, plus a specialized <code>.pang</code> XML/Markdown format for
+                  custom chunking and visualization of ingested documents.</li>
+              <li>Deployed this work to MyFi, the SBI Mutual Assist WhatsApp bot, and the DSP chatbot.</li>
+            </ul>
+          </div>
+
+          <div class="cv-item">
+            <div class="cv-top">
+              <h3 class="cv-role">Student Researcher</h3>
+              <span class="cv-when">Aug 2024 — Present</span>
+            </div>
+            <p class="cv-org">VIT Vellore, SAS Lab <span class="where">· Vellore, TN</span></p>
+            <ul>
+              <li>Work with Prof. Prabhujit Mohapatra (School of Sciences) on metaheuristic algorithms for image
+                  thresholding. The collaboration has produced two publications: WALO and OBL–CPSOGSA.</li>
+            </ul>
+          </div>
+
+          <div class="cv-item">
+            <div class="cv-top">
+              <h3 class="cv-role">Project Lead Intern</h3>
+              <span class="cv-when">Dec 2023</span>
+            </div>
+            <p class="cv-org">Cre-AID Labs <span class="where">· Bangalore, KA</span></p>
+            <ul>
+              <li>Prototyped and tested an EMG biofeedback device at 98% lower cost than leading market alternatives.</li>
+              <li>Integrated a live voice detection and actuation module while reworking the app's UI/UX.</li>
+            </ul>
+          </div>
+
+          <div class="cv-item">
+            <div class="cv-top">
+              <h3 class="cv-role">Research and Development Intern</h3>
+              <span class="cv-when">Jul 2023</span>
+            </div>
+            <p class="cv-org">Cre-AID Labs <span class="where">· Bangalore, KA</span></p>
+            <ul>
+              <li>Deployed a real-time hotword-driven voice detection and actuation module on a low-resource device.</li>
+              <li>Built a hand-size measurement system with PyTorch, Detectron, and U²-Net, cutting measurement time by three quarters.</li>
+              <li>Established a crack and abnormality detection framework, reducing quality-check time by 86% (13 minutes).</li>
+              <li>Designed a custom GATT-based Bluetooth protocol for the app to talk to their devices.</li>
+            </ul>
+          </div>
+
+          <div class="cv-item">
+            <div class="cv-top">
+              <h3 class="cv-role">Founder</h3>
+              <span class="cv-when">Mar 2023 — Jun 2024</span>
+            </div>
+            <p class="cv-org">Turn It Online (TIO) <span class="where">· Vellore, TN</span></p>
+            <ul>
+              <li>A one-stop service for businesses establishing an online presence, serving clients across India and
+                  still supporting two live websites.</li>
+            </ul>
+          </div>
+        </section>
+      </div>
+
+      <!-- Skills -->
+      <div class="row">
+        <section class="cv">
+          <p class="meta" style="margin-bottom:16px;">Skills</p>
+          <dl class="skills">
+            <div class="skill"><dt>Libraries</dt><dd>PyTorch, OpenCV, Keras, YOLO, MediaPipe, NLTK, scikit-learn, pandas, Matplotlib, NumPy</dd></div>
+            <div class="skill"><dt>Languages</dt><dd>C, C++, Java, Python, Dart, R, Go, HTML, CSS, JavaScript, MySQL</dd></div>
+            <div class="skill"><dt>Tooling</dt><dd>Pinecone, Elasticsearch, MATLAB, Docker, GitHub, Hugging Face, AWS, GCP, Figma</dd></div>
+            <div class="skill"><dt>Spoken</dt><dd>English, Hindi, Tamil, Malayalam, Sanskrit</dd></div>
+          </dl>
+        </section>
+      </div>
+    </div>
+
+    <!-- ======================= EDUCATION ======================= -->
+    <div id="education" class="panel" role="tabpanel">
+
+      <div class="row">
+        <div class="layer">
+          <h2>Education</h2>
+          <p class="note">Two undergraduate degrees in parallel, plus coursework and certifications taken alongside them.</p>
+        </div>
+      </div>
+
+      <!-- Degrees -->
+      <div class="row">
+        <section class="cv">
+          <p class="meta" style="margin-bottom:16px;">Degrees</p>
+
+          <div class="cv-item">
+            <div class="cv-top">
+              <h3 class="cv-role">B.Tech, Computer Science Engineering</h3>
+              <span class="cv-when">Expected July 2026</span>
+            </div>
+            <p class="cv-org">Vellore Institute of Technology <span class="where">· Vellore, TN</span></p>
+          </div>
+
+          <div class="cv-item">
+            <div class="cv-top">
+              <h3 class="cv-role">BS, Data Science and Applications</h3>
+              <span class="cv-when">Expected 2026</span>
+            </div>
+            <p class="cv-org">Indian Institute of Technology, Madras <span class="where">· Chennai, TN</span></p>
+          </div>
+
+          <div class="cv-item">
+            <div class="cv-top">
+              <h3 class="cv-role">Additional Coursework</h3>
+            </div>
+            <ul>
+              <li>CS6350 — Computer Vision, VPLAB, IIT Madras</li>
+              <li>FCSE753 — Automatic Speech Recognition, Preethi Jyothi, IIT Bombay</li>
+            </ul>
+          </div>
+        </section>
+      </div>
+
+      <!-- Workshops -->
+      <div class="row">
+        <section class="cv">
+          <p class="meta" style="margin-bottom:16px;">Workshops &amp; Certifications</p>
+          <div class="cv-item">
+            <ul style="margin-top:0">
+              <li>Poster presentation — OMNIFLUX, IndoML 2025, BITS Hyderabad
+                  (<a href="https://www.linkedin.com/posts/abhay-sastha-s_hi-ill-be-presenting-our-poster-omniflux-activity-7407747564621488129-0MxN">announcement</a>)</li>
+              <li>Foundations in Data Science — IIT Madras</li>
+              <li>Genomic Data Analysis on AWS Omics — IBAB, Bangalore</li>
+              <li>Fine-tuning and Evaluation — DeepLearning.AI</li>
+              <li>Quantization in Depth — Hugging Face &amp; DeepLearning.AI</li>
+            </ul>
+          </div>
+        </section>
+      </div>
+
+    </div>
+
     <!-- ======================= CLAUDING ======================= -->
     <div id="clauding" class="panel" role="tabpanel">
 
@@ -1305,7 +1515,6 @@
       </div>
     </div>
 
-
     <!-- ======================= BLOGS ======================= -->
     <div id="blogs" class="panel" role="tabpanel">
 
@@ -1328,203 +1537,6 @@
           </div>
         </div>
       </div>
-    </div>
-
-    <!-- ======================= 03 · EXPERIENCE ======================= -->
-    <div id="experience" class="panel" role="tabpanel">
-
-      <div class="row">
-        <div class="layer">
-          <h2>Experience</h2>
-          <p class="note">Where I have worked, and what I built while I was there.</p>
-        </div>
-      </div>
-
-      <!-- Roles -->
-      <div class="row">
-        <section class="cv">
-          <p class="meta" style="margin-bottom:16px;">Roles</p>
-
-          <div class="cv-item">
-            <div class="cv-top">
-              <h3 class="cv-role">AI Engineer</h3>
-              <span class="cv-when">Jun 2026 — Present</span>
-            </div>
-            <p class="cv-org">MyFi, TIFIN India <span class="where">· Bangalore, KA</span></p>
-            <ul>
-              <li>Build the agentic systems behind an AI wealth advisor for Indian retail investors — multi-agent
-                  orchestration, intent routing, and grounding answers in a user's actual portfolio.</li>
-              <li>Converted to full time in June 2026 after roughly a year interning on the same team.</li>
-            </ul>
-          </div>
-
-          <div class="cv-item">
-            <div class="cv-top">
-              <h3 class="cv-role">Machine Learning Intern</h3>
-              <span class="cv-when">Dec 2025 — Jun 2026</span>
-            </div>
-            <p class="cv-org">MyFi, TIFIN India <span class="where">· Bangalore, KA</span></p>
-            <ul>
-              <li>Built the frontend, backend, and ASR/TTS integration for MyFi's voice interface, serving a custom
-                  Qwen3-TTS voice on a latency-optimized vLLM-Omni server
-                  (<a href="https://github.com/Abhay-Sastha-S/Qwen3-TTS-myfi">code</a>).</li>
-              <li>Manage and extend the multi-agent orchestration stack behind the financial chatbot, including a
-                  dedicated Math agent that removes the dependency on LLM arithmetic.</li>
-              <li>Built an evaluation framework and test bench for the agentic chatbots deployed at Motilal, Axis,
-                  SBI, and MyFi.</li>
-            </ul>
-          </div>
-
-          <div class="cv-item">
-            <div class="cv-top">
-              <h3 class="cv-role">Machine Learning Intern</h3>
-              <span class="cv-when">Apr — Aug 2025</span>
-            </div>
-            <p class="cv-org">MyFi, TIFIN India <span class="where">· Bangalore, KA</span></p>
-            <ul>
-              <li>Developed a hierarchical graph RAG with attribute extraction and higher-order nodes for financial documents.</li>
-              <li>Fine-tuned LLMs, embedding models, and rerankers over curated datasets using instruction tuning, DPO,
-                  LoRA, QLoRA, and negative mining.</li>
-              <li>Ran knowledge distillation from Sarvam-M to Qwen-14B via response matching for stronger Indic
-                  capability, then from Qwen-14B to 3B using copy-weight initialization to cut inference time.</li>
-              <li>Redesigned the RAG system with a Tip-of-the-Tongue approach, improving Success@10 from 35% to 85% on a
-                  manually curated golden-label dataset.</li>
-              <li>Refactored the inference pipeline in Go, cutting latency from 250ms to 160ms and lifting throughput
-                  from 10 to 60 RPS.</li>
-              <li>Implemented guardrails on a custom architecture built from fine-tuned sub-100M Llama models.</li>
-              <li>Created a multimodal RAG package using Qwen Omni and a VLM, with purpose-built table, chart, and image
-                  extraction via PyOCR and R-CNN FPN, plus a specialized <code>.pang</code> XML/Markdown format for
-                  custom chunking and visualization of ingested documents.</li>
-              <li>Deployed this work to MyFi, the SBI Mutual Assist WhatsApp bot, and the DSP chatbot.</li>
-            </ul>
-          </div>
-
-          <div class="cv-item">
-            <div class="cv-top">
-              <h3 class="cv-role">Student Researcher</h3>
-              <span class="cv-when">Aug 2024 — Present</span>
-            </div>
-            <p class="cv-org">VIT Vellore, SAS Lab <span class="where">· Vellore, TN</span></p>
-            <ul>
-              <li>Work with Prof. Prabhujit Mohapatra (School of Sciences) on metaheuristic algorithms for image
-                  thresholding. The collaboration has produced two publications: WALO and OBL–CPSOGSA.</li>
-            </ul>
-          </div>
-
-          <div class="cv-item">
-            <div class="cv-top">
-              <h3 class="cv-role">Project Lead Intern</h3>
-              <span class="cv-when">Dec 2023</span>
-            </div>
-            <p class="cv-org">Cre-AID Labs <span class="where">· Bangalore, KA</span></p>
-            <ul>
-              <li>Prototyped and tested an EMG biofeedback device at 98% lower cost than leading market alternatives.</li>
-              <li>Integrated a live voice detection and actuation module while reworking the app's UI/UX.</li>
-            </ul>
-          </div>
-
-          <div class="cv-item">
-            <div class="cv-top">
-              <h3 class="cv-role">Research and Development Intern</h3>
-              <span class="cv-when">Jul 2023</span>
-            </div>
-            <p class="cv-org">Cre-AID Labs <span class="where">· Bangalore, KA</span></p>
-            <ul>
-              <li>Deployed a real-time hotword-driven voice detection and actuation module on a low-resource device.</li>
-              <li>Built a hand-size measurement system with PyTorch, Detectron, and U²-Net, cutting measurement time by three quarters.</li>
-              <li>Established a crack and abnormality detection framework, reducing quality-check time by 86% (13 minutes).</li>
-              <li>Designed a custom GATT-based Bluetooth protocol for the app to talk to their devices.</li>
-            </ul>
-          </div>
-
-          <div class="cv-item">
-            <div class="cv-top">
-              <h3 class="cv-role">Founder</h3>
-              <span class="cv-when">Mar 2023 — Jun 2024</span>
-            </div>
-            <p class="cv-org">Turn It Online (TIO) <span class="where">· Vellore, TN</span></p>
-            <ul>
-              <li>A one-stop service for businesses establishing an online presence, serving clients across India and
-                  still supporting two live websites.</li>
-            </ul>
-          </div>
-        </section>
-      </div>
-
-      <!-- Skills -->
-      <div class="row">
-        <section class="cv">
-          <p class="meta" style="margin-bottom:16px;">Skills</p>
-          <dl class="skills">
-            <div class="skill"><dt>Libraries</dt><dd>PyTorch, OpenCV, Keras, YOLO, MediaPipe, NLTK, scikit-learn, pandas, Matplotlib, NumPy</dd></div>
-            <div class="skill"><dt>Languages</dt><dd>C, C++, Java, Python, Dart, R, Go, HTML, CSS, JavaScript, MySQL</dd></div>
-            <div class="skill"><dt>Tooling</dt><dd>Pinecone, Elasticsearch, MATLAB, Docker, GitHub, Hugging Face, AWS, GCP, Figma</dd></div>
-            <div class="skill"><dt>Spoken</dt><dd>English, Hindi, Tamil, Malayalam, Sanskrit</dd></div>
-          </dl>
-        </section>
-      </div>
-    </div>
-
-    <!-- ======================= EDUCATION ======================= -->
-    <div id="education" class="panel" role="tabpanel">
-
-      <div class="row">
-        <div class="layer">
-          <h2>Education</h2>
-          <p class="note">Two undergraduate degrees in parallel, plus coursework and certifications taken alongside them.</p>
-        </div>
-      </div>
-
-      <!-- Degrees -->
-      <div class="row">
-        <section class="cv">
-          <p class="meta" style="margin-bottom:16px;">Degrees</p>
-
-          <div class="cv-item">
-            <div class="cv-top">
-              <h3 class="cv-role">B.Tech, Computer Science Engineering</h3>
-              <span class="cv-when">Expected July 2026</span>
-            </div>
-            <p class="cv-org">Vellore Institute of Technology <span class="where">· Vellore, TN</span></p>
-          </div>
-
-          <div class="cv-item">
-            <div class="cv-top">
-              <h3 class="cv-role">BS, Data Science and Applications</h3>
-              <span class="cv-when">Expected 2026</span>
-            </div>
-            <p class="cv-org">Indian Institute of Technology, Madras <span class="where">· Chennai, TN</span></p>
-          </div>
-
-          <div class="cv-item">
-            <div class="cv-top">
-              <h3 class="cv-role">Additional Coursework</h3>
-            </div>
-            <ul>
-              <li>CS6350 — Computer Vision, VPLAB, IIT Madras</li>
-              <li>FCSE753 — Automatic Speech Recognition, Preethi Jyothi, IIT Bombay</li>
-            </ul>
-          </div>
-        </section>
-      </div>
-
-      <!-- Workshops -->
-      <div class="row">
-        <section class="cv">
-          <p class="meta" style="margin-bottom:16px;">Workshops &amp; Certifications</p>
-          <div class="cv-item">
-            <ul style="margin-top:0">
-              <li>Poster presentation — OMNIFLUX, IndoML 2025, BITS Hyderabad
-                  (<a href="https://www.linkedin.com/posts/abhay-sastha-s_hi-ill-be-presenting-our-poster-omniflux-activity-7407747564621488129-0MxN">announcement</a>)</li>
-              <li>Foundations in Data Science — IIT Madras</li>
-              <li>Genomic Data Analysis on AWS Omics — IBAB, Bangalore</li>
-              <li>Fine-tuning and Evaluation — DeepLearning.AI</li>
-              <li>Quantization in Depth — Hugging Face &amp; DeepLearning.AI</li>
-            </ul>
-          </div>
-        </section>
-      </div>
-
     </div>
 
     <!-- ======================= FOOTER ======================= -->
