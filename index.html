@@ -8,20 +8,24 @@
   <meta name="description" content="Abhay Sastha S — AI engineer at MyFi (TIFIN). Perception and audio, then language, now agents — working toward multimodal systems that take every modality in and produce actions out.">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="canonical" href="https://abhay-sastha-s.github.io/">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%23ffffff'/><text x='16' y='23' font-size='19' font-family='Georgia,serif' text-anchor='middle' fill='%230969da'>A</text></svg>">
 
   <style>
     :root {
       --paper:  #ffffff;
       --plate:  #f6f8fa;
-      --ink:    #1f2328;
-      --dim:    #656d76;
-      --faint:  #8b949e;
-      --rust:   #0969da;
-      --rule:   #d0d7de;
+      --ink:    #14141a;
+      --dim:    #6a6a72;
+      --faint:  #a3a3ab;
+      --rust:   #3b2fb0;
+      --rule:   #e7e7ea;
 
-      --serif: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-      --mono:  -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      --head:  "Space Grotesk", "Inter", -apple-system, system-ui, sans-serif;
+  --serif: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      --mono:  "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
 
     }
 
@@ -41,7 +45,7 @@
     }
 
     .sheet {
-      max-width: 912px;
+      max-width: 720px;
       margin: 0 auto;
       padding: 0 28px 96px;
     }
@@ -67,10 +71,10 @@
 
 
     h1 {
-      font-family: var(--serif);
-      font-size: 40px;
+      font-family: var(--head);
+      font-size: 42px;
       font-weight: 600;
-      letter-spacing: -0.015em;
+      letter-spacing: -0.03em;
       line-height: 1.1;
       margin: 0 0 20px;
     }
@@ -131,6 +135,7 @@
     /* ============ section heading ============ */
     .layer { padding: 54px 0 26px; }
     .layer h2 {
+      font-family: var(--head);
       font-size: 25px;
       font-weight: 600;
       letter-spacing: -0.01em;
@@ -159,6 +164,7 @@
     }
 
     .blk h3 {
+      font-family: var(--head);
       font-size: 18px;
       font-weight: 600;
       line-height: 1.32;
@@ -323,7 +329,7 @@
       gap: 16px;
       flex-wrap: wrap;
     }
-    .cv-role { font-size: 17px; font-weight: 600; margin: 0; }
+    .cv-role { font-family: var(--head); font-size: 17px; font-weight: 600; margin: 0; }
     .cv-when {
       font-family: var(--mono);
       font-size: 10.5px;
@@ -420,26 +426,18 @@
         <h1>Abhay Sastha S</h1>
         <div class="bio">
           <p>
-            I am an AI engineer at <a href="https://www.askmyfi.com/">MyFi</a> (TIFIN), where I build the agentic
-            systems behind an AI wealth advisor for Indian retail investors.
+            AI engineer at <a href="https://www.askmyfi.com/">MyFi</a> (TIFIN), building the agentic systems behind
+            an AI wealth advisor for Indian retail investors.
           </p>
           <p>
-            I started in perception — computer vision and audio on small devices, where a model had to read a
-            physical signal and make something happen. Language came next, and pulled that work back in: the table
-            and chart extractors inside the multimodal RAG system I built were the same vision problem, now feeding
-            an LLM, and audio returned the same way as a served TTS voice. The current work is agents — systems that
-            decide what to do, not only what to say.
+            I came up through perception and speech, moved to language, and now build agents — each step adding a
+            modality or the ability to act. I am working toward the one system that holds all of them at once:
+            vision, audio, language and state in, actions out. That is where world models and robot policies lead.
           </p>
           <p>
-            Each step has added either a modality or the ability to act, mostly one at a time. What I want to work
-            on is the system that holds all of them at once: vision, audio, language and state going in, actions
-            coming out, against a learned model of how the world responds. World models and robot policies are
-            where that ends up, and it is the direction I am deliberately building toward.
-          </p>
-          <p>
-            Alongside this I research Mixture-of-Experts architectures, and I am finishing two undergraduate
-            degrees in parallel — a B.Tech in Computer Science at <a href="https://vit.ac.in/">VIT Vellore</a> and a
-            BS in Data Science at <a href="https://study.iitm.ac.in/ds/">IIT Madras</a>.
+            I also research Mixture-of-Experts architectures, and I am finishing a B.Tech at
+            <a href="https://vit.ac.in/">VIT Vellore</a> and a BS in Data Science at
+            <a href="https://study.iitm.ac.in/ds/">IIT Madras</a> in parallel.
           </p>
           <p class="refs" style="margin-top:16px">
             <button class="more" onclick="openMore('story')">the longer version</button>
@@ -524,9 +522,7 @@
       <div class="row">
         <div class="layer">
           <h2>Research</h2>
-          <p class="note">
-            Efficient transformer architectures, multimodal retrieval, and metaheuristic optimization for image analysis.
-          </p>
+          <p class="note">Transformer architectures, multimodal retrieval, metaheuristic optimization.</p>
         </div>
       </div>
 
@@ -538,7 +534,7 @@
               <h3>ExpertAttention: Output-Conditioned Aggregation for Mixture-of-Experts Transformers</h3>
               <p class="byline"><span class="me">Abhay Sastha S</span></p>
               <p class="meta"><span class="venue">Work in progress</span> &nbsp;·&nbsp; 2026</p>
-              <p class="body">An MoE router computes aggregation weights from the input <em>before any expert has run</em>, conflating which experts to activate with how to combine what they produce. ExpertAttention leaves routing untouched and replaces the fixed weighted sum with attention over the actual expert outputs, at under 0.003% compute overhead.</p>
+              <p class="body">An MoE router fixes how expert outputs combine <em>before any expert runs</em>. ExpertAttention swaps that for attention over the real outputs, at &lt;0.003% overhead.</p>
               <p class="refs">
                 <button class="more" onclick="openMore('ea')">read more</button>
                 <a href="assets/proposal_msr.pdf">proposal</a></p>
@@ -613,7 +609,7 @@
               <h3><a href="https://doi.org/10.1007/s12065-025-01119-6">A hybrid whale–ant lion optimization algorithm with random opposition-based strategy for multilevel image thresholding</a></h3>
               <p class="byline"><span class="me">S. Abhay Sastha</span>, Manish Mahato, Sarada Mohapatra, Subhabrata Rath, Prabhujit Mohapatra</p>
               <p class="meta"><span class="venue">Evolutionary Intelligence 19(1)</span> &nbsp;·&nbsp; Springer Nature &nbsp;·&nbsp; 2026</p>
-              <p class="body">A hybrid metaheuristic combining whale optimization with ant lion optimization under a random opposition-based strategy, applied to multilevel image thresholding.</p>
+              <p class="body">A hybrid whale / ant-lion metaheuristic with random opposition-based learning, for multilevel image thresholding.</p>
               <p class="refs">
                 <button class="more" onclick="openMore('walo')">read more</button>
                 <a href="https://doi.org/10.1007/s12065-025-01119-6">paper</a>
@@ -664,10 +660,7 @@
               <h3>4 to 7: A hybrid deep learning model for detection of keratoconus with and without feature selection using EfficientNetV2</h3>
               <p class="byline"><span class="me">Abhay Sastha S</span> et al.</p>
               <p class="meta"><span class="venue">Under review</span></p>
-              <p class="body">
-                A hybrid deep learning pipeline for keratoconus detection, comparing EfficientNetV2 backbones with and
-                without an explicit feature-selection stage.
-              </p>
+              <p class="body">A hybrid deep-learning pipeline for keratoconus detection, EfficientNetV2 with and without a feature-selection stage.</p>
               <div class="tags">
                 <span class="tag">Medical Imaging</span>
                 <span class="tag">Computer Vision</span>
@@ -706,7 +699,7 @@
               <h3>OMNIFLUX: A Pluggable End-to-End Multimodal RAG Pipeline</h3>
               <p class="byline"><span class="me">Abhay Sastha S</span></p>
               <p class="meta"><span class="venue">Poster, IndoML 2025</span> &nbsp;·&nbsp; BITS Hyderabad</p>
-              <p class="body">A configurable five-stage pipeline that pulls text, tables, charts and images out of PDFs and CSVs, generates meta-questions to improve retrieval, and upserts enriched chunks into a vector store.</p>
+              <p class="body">Extracts text, tables, charts and images from documents and upserts them into a vector store — every stage swappable.</p>
               <p class="refs">
                 <button class="more" onclick="openMore('omni')">read more</button>
                 <a href="https://www.linkedin.com/posts/abhay-sastha-s_hi-ill-be-presenting-our-poster-omniflux-activity-7407747564621488129-0MxN">poster</a>
@@ -768,9 +761,7 @@
       <div class="row">
         <div class="layer">
           <h2>Projects</h2>
-          <p class="note">
-            Grouped the way the work actually went — perception first, then language, then choosing actions.
-          </p>
+          <p class="note">Grouped the way the work went — perception, then language, then action.</p>
         </div>
       </div>
 
@@ -866,7 +857,7 @@
           <div class="blk-in">
             <div>
               <h3><a href="https://github.com/Abhay-Sastha-S/Qwen3-TTS-myfi">Qwen3-TTS-myfi — High-Concurrency Async TTS Serving</a></h3>
-              <p class="body">A high-concurrency async TTS server running Qwen3-TTS-1.7B on a custom vLLM-Omni fork, tuned for latency under concurrent load. Shipped with the ASR integration behind MyFi's voice interface.</p>
+              <p class="body">A high-concurrency async TTS server for Qwen3-TTS on a custom vLLM-Omni fork, tuned for latency under load.</p>
               <p class="refs">
                 <button class="more" onclick="openMore('tts')">read more</button>
                 <a href="https://github.com/Abhay-Sastha-S/Qwen3-TTS-myfi">code</a></p>
@@ -1006,7 +997,7 @@
           <div class="blk-in">
             <div>
               <h3><a href="https://github.com/Abhay-Sastha-S/GNN-PL-Docking/">DI-GNN — Dynamic Interaction Graphs for Protein–Ligand Docking</a></h3>
-              <p class="body">A proof of concept for protein–ligand docking that pairs dynamic interaction graphs with RL-guided pose refinement — a policy choosing how to move a molecule, not just a scoring function.</p>
+              <p class="body">A protein–ligand docking PoC pairing dynamic interaction graphs with RL-guided pose refinement.</p>
               <p class="refs">
                 <button class="more" onclick="openMore('digmn')">read more</button>
                 <a href="https://github.com/Abhay-Sastha-S/GNN-PL-Docking/">code</a></p>
@@ -1050,7 +1041,7 @@
           <div class="blk-in">
             <div>
               <h3><a href="https://github.com/Abhay-Sastha-S/KrishiGyaan">KrishiGyaan — Crop Rotation Recommendation with Deep RL</a></h3>
-              <p class="body">A DQN agent that recommends crop rotations from soil nutrients, moisture and soil type — sequential decisions judged on long-run soil health rather than one-shot yield.</p>
+              <p class="body">A DQN agent recommending crop rotations from soil signals, judged on long-run soil health.</p>
               <p class="refs">
                 <button class="more" onclick="openMore('krishi')">read more</button>
                 <a href="https://github.com/Abhay-Sastha-S/KrishiGyaan">code</a></p>
@@ -1104,7 +1095,7 @@
       <div class="row">
         <div class="layer">
           <h2>Experience</h2>
-          <p class="note">Where I have worked, and what I built while I was there.</p>
+          <p class="note">Where I have worked, and what I built.</p>
         </div>
       </div>
 
@@ -1239,7 +1230,7 @@
       <div class="row">
         <div class="layer">
           <h2>Education</h2>
-          <p class="note">Two undergraduate degrees in parallel, plus coursework and certifications taken alongside them.</p>
+          <p class="note">Two degrees in parallel, plus coursework and certifications.</p>
         </div>
       </div>
 
@@ -1301,10 +1292,7 @@
       <div class="row">
         <div class="layer">
           <h2>Clauding</h2>
-          <p class="note">
-            Tools I built for my own Claude Code workflow, then cleaned up and released. Each one runs on
-            my own machine, carries no runtime dependencies, and solves something that was annoying me daily.
-          </p>
+          <p class="note">Tools I built for my own Claude Code workflow and released — local, dependency-free.</p>
         </div>
       </div>
 
@@ -1314,11 +1302,7 @@
             <div>
               <h3><a href="https://github.com/Abhay-Sastha-S/claude-agent-dashboard">Claude Agent Dashboard</a></h3>
               <p class="meta"><span class="venue">Claude Code plugin</span> &nbsp;·&nbsp; Node, zero dependencies</p>
-              <p class="body">
-                A local command center for running, watching, and talking to many Claude Code sessions at once —
-                as a grid of live tiles at <code>localhost:4747</code>. One session per terminal tab stops working
-                the moment you are doing more than one thing.
-              </p>
+              <p class="body">A local grid of live tiles for running, watching and chatting with many Claude Code sessions at once.</p>
               <p class="refs">
                 <button class="more" onclick="openMore('dash')">read more</button>
                 <a href="https://github.com/Abhay-Sastha-S/claude-agent-dashboard">code</a>
@@ -1417,11 +1401,7 @@
             <div>
               <h3><a href="https://github.com/Abhay-Sastha-S/rtk-meter">rtk-meter</a></h3>
               <p class="meta"><span class="venue">tmux pane</span> &nbsp;·&nbsp; Bash, no dependencies</p>
-              <p class="body">
-                A 34-column tmux side pane showing live token savings, Claude session and weekly usage with reset
-                countdowns, and Claude Code status. Three things you keep interrupting yourself to check, moved from
-                something you query to something you glance at.
-              </p>
+              <p class="body">A 34-column tmux pane showing live token savings, session and weekly usage, and Claude status.</p>
               <p class="refs">
                 <button class="more" onclick="openMore('rtk')">read more</button>
                 <a href="https://github.com/Abhay-Sastha-S/rtk-meter">code</a>
@@ -1527,11 +1507,7 @@
             <div>
               <h3><a href="https://github.com/Abhay-Sastha-S/pr-control">PR Control</a></h3>
               <p class="meta"><span class="venue">Claude Code plugin</span> &nbsp;·&nbsp; Python, no dependencies</p>
-              <p class="body">
-                One page for every pull request in flight, joining GitHub with the review-channel messages that
-                asked for review, the tickets they close, and the local Claude sessions that wrote them &mdash; then
-                computing the order they actually have to merge in.
-              </p>
+              <p class="body">One page for every open PR — GitHub, the review requests, the tickets they close, and the sessions that wrote them.</p>
               <p class="refs">
                 <button class="more" onclick="openMore('prc')">read more</button>
                 <a href="https://github.com/Abhay-Sastha-S/pr-control">code</a>
@@ -1640,7 +1616,7 @@
       <div class="row">
         <div class="layer">
           <h2>Blogs</h2>
-          <p class="note">Notes on things I have built, broken, or read closely enough to have an opinion about.</p>
+          <p class="note">Notes on things I have built, broken, or read closely enough to argue about.</p>
         </div>
       </div>
 
