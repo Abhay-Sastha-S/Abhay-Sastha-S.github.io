@@ -1,0 +1,983 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>A live summary that rewrites itself: a first stab at causal speech-to-meaning · Abhay Sastha S</title>
+  <meta name="author" content="Abhay Sastha S">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"
+    onload="renderMathInElement(document.body,{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}],throwOnError:false});"></script>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%23ffffff'/><text x='16' y='23' font-size='19' font-family='Georgia,serif' text-anchor='middle' fill='%230969da'>A</text></svg>">
+  <style>
+    :root {
+      --paper:#ffffff; --plate:#f6f8fa; --ink:#14141a; --dim:#6a6a72; --faint:#a3a3ab;
+      --rust:#3b2fb0; --rule:#e7e7ea;
+      --head:"Space Grotesk","Inter",-apple-system,system-ui,sans-serif;
+      --serif:"Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+      --mono:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+    }
+    *{box-sizing:border-box}
+    html{-webkit-text-size-adjust:100%}
+    body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--serif);font-size:16px;line-height:1.62;-webkit-font-smoothing:antialiased}
+    .sheet{max-width:720px;margin:0 auto;padding:0 28px 96px}
+    a{color:var(--rust);text-decoration:none}
+    a:hover{text-decoration:underline}
+
+    .crumb{padding:40px 0 0;font-family:var(--mono);font-size:11.5px;letter-spacing:.13em;text-transform:uppercase;color:var(--faint)}
+    .crumb a{color:var(--faint)} .crumb a:hover{color:var(--ink);text-decoration:none}
+    .masthead{padding:34px 0 10px;border-bottom:1px solid var(--ink);margin-bottom:26px}
+    h1{font-family:var(--head);font-size:34px;font-weight:600;letter-spacing:-0.025em;line-height:1.15;margin:0 0 14px}
+    .byline{font-family:var(--mono);font-size:11px;letter-spacing:.06em;color:var(--dim);margin:0 0 22px}
+    .byline .venue{color:var(--rust);background:rgba(59,47,176,.075);padding:2px 6px;border-radius:2px}
+
+    article h2{font-family:var(--head);font-size:23px;font-weight:600;letter-spacing:-0.01em;margin:54px 0 12px;padding-top:22px;border-top:1px solid var(--rule)}
+    article h3{font-family:var(--head);font-size:17px;font-weight:600;margin:30px 0 8px}
+    article p{margin:0 0 14px;color:#2B2621;font-size:15.6px}
+    article li{margin-bottom:7px;color:#2B2621;font-size:15.2px}
+    article li::marker{color:var(--faint)}
+    article ul,article ol{margin:0 0 14px;padding-left:20px}
+    article strong{font-weight:600;color:var(--ink)}
+    article em{font-style:italic}
+    article hr{display:none}
+    article blockquote{border-left:2px solid var(--rust);margin:18px 0 20px;padding:2px 0 2px 16px;color:var(--dim);font-size:14.8px}
+    article blockquote p{color:#3b3b44;margin:0 0 8px}
+    article blockquote p:last-child{margin-bottom:0}
+
+    article code{font-family:var(--mono);font-size:12.8px;background:var(--plate);padding:1px 5px;border-radius:2px}
+    article pre{background:var(--plate);border:1px solid var(--rule);border-radius:2px;padding:14px 16px;overflow-x:auto;margin:0 0 18px;font-size:12.6px;line-height:1.5}
+    article pre code{background:none;padding:0;font-size:inherit}
+
+    article table{border-collapse:collapse;width:100%;margin:0 0 20px;font-size:13.8px;display:block;overflow-x:auto}
+    article th,article td{text-align:left;padding:7px 10px;border-bottom:1px solid var(--rule);vertical-align:top;white-space:nowrap}
+    article th{font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--faint);font-weight:500;border-bottom:1px solid var(--ink)}
+    article td:first-child{white-space:normal}
+
+    .katex-display{margin:14px 0 20px;overflow-x:auto;overflow-y:hidden;padding:2px 0}
+    .katex{font-size:1.02em}
+
+    footer.out{padding:48px 0 0;border-top:1px solid var(--rule);margin-top:60px}
+    .colophon{margin:12px 0 0;font-size:13.5px;color:var(--dim);max-width:60ch}
+
+    @media (max-width:820px){
+      body{font-size:15.5px}.sheet{padding:0 20px 72px}h1{font-size:28px}
+      article table{font-size:12.8px}
+    }
+  </style>
+</head>
+<body>
+<div class="sheet">
+  <p class="crumb"><a href="../index.html">Abhay Sastha S</a> &nbsp;/&nbsp; <a href="../index.html#blogs">Blogs</a></p>
+  <header class="masthead">
+    <h1>A live summary that rewrites itself: a first stab at causal speech-to-meaning</h1>
+    <p class="byline"><span class="venue">Research notes</span> &nbsp;·&nbsp; Abhay Sastha S · September 2026 · work in progress</p>
+  </header>
+  <article>
+<blockquote>
+<p><strong>Read this as a lab notebook, not a paper.</strong> It records a problem we found interesting, the way we tried to formulate it, the apparatus we built to test that formulation, what the first round of runs did and did not do, and the questions we are left holding. Nothing here is a confirmed result. Every number comes from synthetic speech, on development splits, with three seeds at most, at 80 ms of encoder lookahead. The one clean holdout has never been read.</p>
+</blockquote>
+<hr />
+<h2 id="1-the-problem">1. The problem</h2>
+<p>Someone is talking to an assistant, continuously, with no pause that marks where a request ends:</p>
+<blockquote>
+<p>"I want to book a hotel in Bangalore... actually Hyderabad... for Friday... no, Saturday."</p>
+</blockquote>
+<p>We wanted a system that consumes that audio as a stream and shows two live text outputs at once.</p>
+<ol>
+<li><strong>A verbatim transcript.</strong> Append-only. Never edited. "Bangalore" stays in it forever.</li>
+<li><strong>A summary of what was meant so far.</strong> Mutable. It should read <em>Book a hotel in Hyderabad for Saturday</em> at the end, and it should have read <em>Book a hotel in Bangalore</em> two seconds earlier, because that was the correct reading of what had been heard at that point.</li>
+</ol>
+<p>The summary has to satisfy constraints that pull against each other:</p>
+<ul>
+<li>Correct with respect to everything heard up to now. No guessing ahead.</li>
+<li>When later speech revises earlier content (correction, retraction, re-targeting), the summary fixes itself <em>in place</em>.</li>
+<li>It must not fidget. "Um", "let me think", "yeah, Tuesday is fine" should leave it alone.</li>
+<li>Visible within roughly 100 to 200 ms of the words.</li>
+</ul>
+<p>The last two are where it gets interesting. A summarizer that regenerates from the growing transcript every few hundred milliseconds gets the content roughly right and churns constantly, rewording itself when nothing changed. A summarizer that listens for "actually" and "no wait" misses the correction in <em>"Tuesday works... Wednesday works better"</em> and fires on <em>"actually, Tuesday is fine"</em>.</p>
+<p>So the requirement we kept coming back to was:</p>
+<blockquote>
+<p><strong>The system has to know when a revision is warranted and when it is not.</strong></p>
+</blockquote>
+<hr />
+<h2 id="2-the-stab-revision-as-a-change-in-state-not-a-pattern-in-words">2. The stab: revision as a change in state, not a pattern in words</h2>
+<p>Our attempt was to stop treating the summary as a function of the transcript and instead maintain a <strong>persistent latent semantic state</strong> that the summary is read out of. Revision is then a property of how that state moves, not of which words arrived.</p>
+<h3 id="21-formal-model">2.1 Formal model</h3>
+<p>Let $x_{1:t}$ be the audio heard up to time $t$. The system maintains</p>
+<p>$$
+H_t = f(H_{t-1}, x_t) \qquad\text{(encoder state, causal)}
+$$</p>
+<p>$$
+M_t = U_\theta(M_{t-1}, H_t) \qquad\text{(semantic state)}
+$$</p>
+<p>$$
+\Delta_t = M_t \ominus M_{t-1} \qquad\text{(semantic delta)}
+$$</p>
+<p>$$
+R_t = g_\phi(\Delta_t, M_{t-1}, M_t) \in \{\text{CONTINUE}, \text{REFINE}, \text{REVISE}\}
+$$</p>
+<p>$$
+S_t =
+\begin{cases}
+S_{t-1} &amp; R_t = \text{CONTINUE} \\
+E_\psi(S_{t-1}, M_t, \Delta_t, R_t) &amp; \text{otherwise}
+\end{cases}
+$$</p>
+<p>and, separately, an append-only transcript $T_{1:t}$ decoded from the same $H_t$.</p>
+<pre><code>                 audio stream
+                      │
+                      ▼
+          ┌───────────────────────┐
+          │ streaming encoder     │  H_t = f(H_{t-1}, x_t)
+          └───────────┬───────────┘
+          ┌───────────┴───────────┐
+          ▼                       ▼
+   transcript decoder       semantic state  M_t = U(M_{t-1}, H_t)
+   (append-only)                  │
+                                  ▼
+                         semantic delta  Δ_t
+                                  │
+                                  ▼
+                         revision gate   R_t ∈ {CONTINUE, REFINE, REVISE}
+                                  │
+                                  ▼
+                         summary editor  S_t
+</code></pre>
+<p>Three things were supposed to follow from this shape, and we want to be explicit that they were <em>hopes</em>, not properties we had established:</p>
+<ol>
+<li><strong>Implicit corrections become detectable.</strong> The gate looks at whether the state moved, so "Wednesday works better" should register as REVISE even though no correction word appears.</li>
+<li><strong>Churn goes away.</strong> The editor only runs when the gate fires, so filler cannot reword the summary.</li>
+<li><strong>Causality is structural.</strong> $M_t$ depends only on $x_{1:t}$, so the summary cannot speculate ahead. Formally, with lookahead $\ell$, the input available at time $t$ is $I_t = X_{\le t+\ell}$, and "strictly causal" means $\ell = 0$.</li>
+</ol>
+<h3 id="22-why-three-classes">2.2 Why three classes</h3>
+<p>We chose a three-way gate rather than binary because "add more detail" and "contradict something already committed" felt like different editing operations. The gold labels fall out mechanically from consecutive gold states $S^*_{t-1}, S^*_t$ (as slot dictionaries):</p>
+<p>$$
+R^*_t =
+\begin{cases}
+\text{CONTINUE} &amp; S^*_t = S^*_{t-1} \\
+\text{REFINE} &amp; S^*_t \supset S^*_{t-1} \;\text{(only additions)} \\
+\text{REVISE} &amp; \text{otherwise (a value changed or was removed)}
+\end{cases}
+$$</p>
+<p>Nothing in this definition mentions wording. That is the whole point: the label is a fact about the state trajectory, and the model has to recover it from audio.</p>
+<hr />
+<h2 id="3-the-apparatus-v0">3. The apparatus (V0)</h2>
+<h3 id="31-freeze-the-ears">3.1 Freeze the ears</h3>
+<p>The first decision was to <strong>freeze a pretrained streaming ASR encoder</strong> and train only the semantic machinery on top of its hidden states. If the system improves, we want to be able to attribute it to the mechanism, not to better hearing. It also makes everything cheap enough to run honestly on one consumer GPU.</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Backbone</td>
+<td>NeMo <code>stt_en_fastconformer_hybrid_large_streaming_multi</code></td>
+</tr>
+<tr>
+<td>$d_{\text{model}}$</td>
+<td>512</td>
+</tr>
+<tr>
+<td>Chunk</td>
+<td>160 ms</td>
+</tr>
+<tr>
+<td>Attention context</td>
+<td>[70, 1] frames, i.e. $\ell = 80$ ms lookahead</td>
+</tr>
+<tr>
+<td>Transcript branch</td>
+<td>CTC (RNN-T cannot stream in NeMo 2.0.0)</td>
+</tr>
+<tr>
+<td>Trainable</td>
+<td>nothing in the encoder</td>
+</tr>
+</tbody>
+</table>
+<p>We drive NeMo's own cache-aware streaming buffer and recover $H_t$ with a forward hook. Features are extracted once per causality regime and cached, so training never touches the encoder and the GPU host does not need NeMo installed.</p>
+<p><strong>Everything below is $\ell = 80$ ms.</strong> The $\ell = 0$ regime exists in code and was never run.</p>
+<h3 id="32-make-meaning-small-enough-to-measure">3.2 Make meaning small enough to measure</h3>
+<p>We needed supervision at every prefix: what is the correct state right now, and did it just change? No corpus has that, so we built one.</p>
+<ul>
+<li>5 intents: book hotel, book flight, schedule meeting, book table, set reminder</li>
+<li>7 slots: <code>intent, location, date, time, person, count, extra</code>, each over a closed vocabulary</li>
+<li>600 utterances rendered with macOS <code>say</code>, cut into 3,673 prefix snapshots</li>
+<li>Deterministic gold summary from the gold state via a template</li>
+</ul>
+<p>The generator deliberately mixes the cases that break a keyword detector:</p>
+<table>
+<thead>
+<tr>
+<th>Segment kind</th>
+<th>Count</th>
+<th>Example</th>
+<th>Gold $R^*_t$</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>open</td>
+<td>600</td>
+<td>"I want to book a hotel"</td>
+<td>REFINE</td>
+</tr>
+<tr>
+<td>add</td>
+<td>1,605</td>
+<td>"...in Bangalore"</td>
+<td>REFINE</td>
+</tr>
+<tr>
+<td>revise, explicit</td>
+<td>348</td>
+<td>"actually Hyderabad"</td>
+<td>REVISE</td>
+</tr>
+<tr>
+<td>revise, implicit</td>
+<td>202</td>
+<td>"Wednesday works better"</td>
+<td>REVISE</td>
+</tr>
+<tr>
+<td>retract</td>
+<td>194</td>
+<td>"forget the pool"</td>
+<td>REVISE</td>
+</tr>
+<tr>
+<td>hard negative</td>
+<td>505</td>
+<td>"actually, Tuesday is fine" (no change)</td>
+<td>CONTINUE</td>
+</tr>
+<tr>
+<td>filler</td>
+<td>219</td>
+<td>"um, let me think"</td>
+<td>CONTINUE</td>
+</tr>
+</tbody>
+</table>
+<p>Class balance over snapshots: REFINE 2,205, REVISE 744, CONTINUE 724. A test asserts that a pure keyword detector scores below 0.75 macro-F1 on these labels; if keyword spotting could solve the data, a good gate result would prove nothing.</p>
+<table>
+<thead>
+<tr>
+<th>Split</th>
+<th>Utterances</th>
+<th>Snapshots</th>
+<th>Role</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>train</td>
+<td>480</td>
+<td>2,928</td>
+<td>fit</td>
+</tr>
+<tr>
+<td>val</td>
+<td>60</td>
+<td>374</td>
+<td>select (checkpoints)</td>
+</tr>
+<tr>
+<td>test</td>
+<td>60</td>
+<td>371</td>
+<td>select (architecture). Contaminated as a final test.</td>
+</tr>
+<tr>
+<td>holdout</td>
+<td>120</td>
+<td>724</td>
+<td>final. <strong>Never read.</strong></td>
+</tr>
+</tbody>
+</table>
+<p>We know this is a toy. The external reviewer we asked was blunt about it: a fixed 7-slot schema cannot represent <em>"we should probably meet, but not Tuesday, because Sarah is on leave"</em>, so the experiment measures a proxy for the goal rather than the goal. We agree, and we return to it in Section 8. The defence of V0 is only that it isolates the <em>mechanism</em> question cheaply.</p>
+<h3 id="33-the-model">3.3 The model</h3>
+<p>Everything trainable sits on top of frozen $H_t \in \mathbb{R}^{T \times 512}$.</p>
+<p><strong>Semantic memory.</strong> $N$ learned slot vectors ($N = 16$ by default) updated by gated cross-attention into the new chunk's frames:</p>
+<p>$$
+\tilde M_t = \mathrm{FFN}\big(M_{t-1} + \mathrm{CrossAttn}(Q{=}M_{t-1},\; K{=}V{=}H_t)\big)
+$$</p>
+<p>$$
+g_t = \sigma\big(W_g[\,M_{t-1}\,;\,\tilde M_t\,]\big), \qquad
+M_t = g_t \odot \tilde M_t + (1 - g_t) \odot M_{t-1}
+$$</p>
+<p>The gate $g_t$ is per-slot, per-dimension, so stable meaning is not overwritten by every acoustic frame.</p>
+<p><strong>Semantic delta.</strong> A learned slot-wise operator, roughly 2.6M parameters:</p>
+<p>$$
+\Delta_t = \mathrm{LN}\Big(\mathrm{MLP}\big([\,M_{t-1}\,;\,M_t\,;\,M_t - M_{t-1}\,;\,M_t \odot M_{t-1}\,]\big)\Big)
+$$</p>
+<p><strong>Revision gate.</strong> Each of $M_{t-1}, M_t, \Delta_t$ is attention-pooled over slots so that a single changed slot can dominate the decision,</p>
+<p>$$
+\mathrm{pool}(X) = \sum_i w_i X_i, \qquad w = \mathrm{softmax}_i(W_s X_i),
+$$</p>
+<p>concatenated with mean-pooled speech frames, and classified three ways. <strong>The gate receives no text.</strong> This is a design constraint, not an accident: if it saw words it could become a correction-keyword detector and we would learn nothing.</p>
+<p><strong>Slot probe.</strong> Seven classification heads attend into $M_t$ and read out the structured state. This is what stages 1 and 2 are scored on.</p>
+<p><strong>Summary head.</strong> Frozen GPT-2 with trainable cross-attention adapters hooked into every second block. Queries come from the LM's hidden states, keys and values from the semantic memory:</p>
+<p>$$
+H_{LM} \leftarrow H_{LM} + \gamma\, W_o\,\mathrm{Attn}\big(Q{=}H_{LM},\; K{=}M_t W_K,\; V{=}M_t W_V\big), \qquad \gamma = 10^{-3}
+$$</p>
+<p>The LM never sees the transcript.</p>
+<h3 id="34-objective">3.4 Objective</h3>
+<p>$$
+\begin{aligned}
+\mathcal L \;=\;&amp; \lambda_{\text{sem}} \sum_{s} \mathrm{CE}\big(\hat S_t[s],\, S^*_t[s]\big) &amp;&amp; \text{slot state} \\
++\;&amp; \lambda_{\text{rev}}\, (1 - p_{R^*_t})^{\gamma}\, \mathrm{CE}\big(\hat R_t,\, R^*_t\big) &amp;&amp; \text{revision, focal} \\
++\;&amp; \lambda_{\text{sum}}\, \mathrm{NLL}\big(S^*_t \mid M_t\big) &amp;&amp; \text{summary (stage 3)} \\
++\;&amp; \lambda_{\text{stab}}\, \mathbf 1[R^*_t = \text{CONTINUE}]\, \|M_t - M_{t-1}\|_2^2 &amp;&amp; \text{stability}
+\end{aligned}
+$$</p>
+<p>The revision term is focal ($\gamma = 2$) because CONTINUE dominates the stream. The stability term penalises <em>memory</em> drift rather than <em>text</em> drift, because that is differentiable and targets the cause of spurious rewrites rather than the symptom. There is no causality loss: each snapshot only ever receives frames up to its own boundary, so causality is enforced by construction.</p>
+<p>Hyperparameters: 30 epochs, batch 8, AdamW at $3\times10^{-4}$ ($10^{-4}$ for adapters), weight decay 0.01, dropout 0.1, gradient clip 1.0. Checkpoint selection on val by $0.5\cdot\text{PSA} + 0.5\cdot\text{RevF1}$.</p>
+<h3 id="35-metrics">3.5 Metrics</h3>
+<p>Let $\hat S_t$ be the predicted state, $\hat R_t$ the predicted class, $G_t$ the generated summary, and starred quantities gold.</p>
+<p>$$
+\text{PSA} = \frac{1}{T}\sum_t \frac{1}{7}\sum_{s} \mathbf 1\big[\hat S_t[s] = S^*_t[s]\big]
+\qquad
+\text{StateExact} = \frac{1}{T}\sum_t \mathbf 1\big[\hat S_t = S^*_t\big]
+$$</p>
+<p>$$
+\text{RevF1} = \tfrac13\big(F1_{\text{CONT}} + F1_{\text{REF}} + F1_{\text{REV}}\big)
+\qquad
+\text{RPC} = 1 - \frac{|\{t : R^*_t = \text{CONT} \wedge \hat R_t \neq \text{CONT}\}|}{|\{t : R^*_t = \text{CONT}\}|}
+$$</p>
+<p>RPC is the one we care about most. It asks: of the moments when nothing changed, how often did the system correctly stay quiet?</p>
+<p>For stability, with $E_t = \mathrm{Lev}(\mathrm{tokens}(G_{t-1}), \mathrm{tokens}(G_t))$:</p>
+<p>$$
+\text{UnnecEdit} = \frac{|\{t : R^*_t = \text{CONT} \wedge E_t &gt; 0\}|}{|\{t : R^*_t = \text{CONT}\}|}
+\qquad
+\text{CSR} = 1 - \text{UnnecEdit}
+$$</p>
+<p>$$
+\text{RRR} = \frac{|\{t : R^*_t \neq \text{CONT} \wedge E_t &gt; 0\}|}{|\{t : R^*_t \neq \text{CONT}\}|}
+$$</p>
+<p>CSR is "stayed still when it should have"; RRR is "moved when it should have". A system can trivially max one by sacrificing the other, which is exactly what happened in Section 4.7.</p>
+<p>For summary content, SSC parses the <em>generated</em> text back to slots with a longest-match-first extractor and scores that against gold, so a valid paraphrase is not penalised the way exact match would.</p>
+<h3 id="36-protocol">3.6 Protocol</h3>
+<p>We tried to make it hard to fool ourselves.</p>
+<ul>
+<li><strong>Pre-registered gate.</strong> Before running anything on real features: if stage-1 PSA does not beat majority-class chance by at least $+0.05$, the encoder states do not carry recoverable meaning and stages 2 and 3 are not worth running. Chance is
+  $$\text{ChancePSA} = \frac{1}{T}\sum_t\frac17\sum_s \mathbf 1\big[\mathrm{maj}[s] = S^*_t[s]\big], \qquad \mathrm{maj}[s] = \arg\max_v |\{t \in \text{train} : S^*_t[s] = v\}|.$$</li>
+<li><strong>Success as a vector, not a scalar.</strong> $(\text{PSA}, \text{StateExact}, \text{RevF1}, \text{RPC}, \text{UnnecEdit}, \text{MeanEdit}, L_{\text{rev}}, \text{RTF})$, with targets fixed against untrained reference systems before any result existed.</li>
+<li><strong>Staged training.</strong> Stage 1: slot probe only. Stage 2: add delta and gate. Stage 3: add the summary LM. Each initialises from the last.</li>
+<li><strong>Ablations.</strong> <code>no_memory</code> (state recomputed from the current chunk only), <code>no_delta</code> (gate cannot see $\Delta_t$), and <code>history_attention</code> (re-derive the state at every snapshot by attending over <em>all</em> frames so far, no recurrent carry). The last was not in the plan; a reviewer asked for it twice.</li>
+<li><strong>Utterance-level paired bootstrap</strong> for every comparison, resampling utterances rather than snapshots because snapshots within an utterance are correlated:
+  $$\delta_b = \mathrm{Metric}(A, U_b) - \mathrm{Metric}(B, U_b), \quad U_b \sim \text{utterances w/ replacement}, \quad B = 5000,$$
+  $$p = 2\min\big(\Pr[\delta_b \le 0], \Pr[\delta_b \ge 0]\big).$$</li>
+</ul>
+<h3 id="37-reference-systems">3.7 Reference systems</h3>
+<p>Test split, 371 snapshots, identical snapshot ids asserted across all three.</p>
+<table>
+<thead>
+<tr>
+<th>System</th>
+<th>PSA</th>
+<th>StateExact</th>
+<th>RevF1</th>
+<th>RPC</th>
+<th>UnnecEdit</th>
+<th>MeanEdit</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>B0 oracle (ceiling)</td>
+<td>1.000</td>
+<td>1.000</td>
+<td>1.000</td>
+<td>1.000</td>
+<td>0.000</td>
+<td>3.17</td>
+</tr>
+<tr>
+<td>B4 keyword detector, given oracle state</td>
+<td>1.000</td>
+<td>1.000</td>
+<td>0.516</td>
+<td><strong>0.000</strong></td>
+<td>0.000</td>
+<td>3.17</td>
+</tr>
+<tr>
+<td>B1 transcript → GPT-2, regenerate each prefix</td>
+<td>0.760</td>
+<td>0.205</td>
+<td>0.383</td>
+<td>0.649</td>
+<td>0.149</td>
+<td><strong>15.0</strong></td>
+</tr>
+</tbody>
+</table>
+<p>Two numbers frame everything that follows. The keyword detector has RPC exactly zero: handed perfect state, it still fires on every hard negative. And the transcript-LM baseline moves 15 tokens between consecutive summaries on average. That is what "churn" looks like numerically.</p>
+<hr />
+<h2 id="4-the-runs">4. The runs</h2>
+<h3 id="41-stage-1-does-the-premise-survive-first-contact">4.1 Stage 1: does the premise survive first contact?</h3>
+<pre><code>model PSA    0.9393
+chance PSA   0.6814
+margin      +0.2578      (bar: +0.05)     → passed
+</code></pre>
+<p>Frozen encoder states appear to carry recoverable slot structure, at least for this vocabulary. The per-slot picture is uneven and worth stating: <code>intent</code> is the real signal (0.987 vs 0.243 chance); <code>person</code> proves almost nothing (0.965 vs 0.952) because that slot is usually absent and "absent" is the majority guess.</p>
+<h3 id="42-stage-2-and-ablations-single-seed">4.2 Stage 2 and ablations, single seed</h3>
+<table>
+<thead>
+<tr>
+<th>Condition</th>
+<th>PSA</th>
+<th>StateExact</th>
+<th>RevF1</th>
+<th>RPC</th>
+<th>UnnecState</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>full (memory + delta + gate)</td>
+<td>0.938</td>
+<td>0.669</td>
+<td>0.888</td>
+<td>0.878</td>
+<td>0.051</td>
+</tr>
+<tr>
+<td>no_memory</td>
+<td>0.878</td>
+<td>0.474</td>
+<td>0.908</td>
+<td>0.932</td>
+<td>0.164</td>
+</tr>
+<tr>
+<td>no_delta</td>
+<td>0.940</td>
+<td>0.658</td>
+<td>0.898</td>
+<td>0.892</td>
+<td>0.068</td>
+</tr>
+<tr>
+<td>history_attention</td>
+<td><strong>0.955</strong></td>
+<td><strong>0.728</strong></td>
+<td>0.764</td>
+<td>0.649</td>
+<td>0.035</td>
+</tr>
+</tbody>
+</table>
+<p>The gate does the thing we hoped it would: RevF1 0.89 with no lexical input, against the keyword detector's 0.52, and it stays quiet on 88% of continuations where the keyword detector stays quiet on none.</p>
+<p>But the persistent memory, which the architecture was built around, loses on state tracking to plain attention over history. Same information, same parameter budget, no recurrence, better at saying what the state <em>is</em>. And the learned delta is within noise of not existing.</p>
+<h3 id="43-three-seeds-and-the-bootstrap">4.3 Three seeds and the bootstrap</h3>
+<table>
+<thead>
+<tr>
+<th>Condition</th>
+<th>PSA</th>
+<th>StateExact</th>
+<th>RevF1</th>
+<th>RPC</th>
+<th>UnnecState</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>full</td>
+<td>0.933 ± 0.003</td>
+<td>0.643 ± 0.013</td>
+<td>0.903 ± 0.010</td>
+<td>0.923 ± 0.023</td>
+<td>0.056 ± 0.008</td>
+</tr>
+<tr>
+<td>no_memory</td>
+<td>0.884 ± 0.002</td>
+<td>0.480 ± 0.009</td>
+<td>0.917 ± 0.007</td>
+<td>0.910 ± 0.006</td>
+<td>0.155 ± 0.004</td>
+</tr>
+<tr>
+<td>no_delta</td>
+<td>0.943 ± 0.002</td>
+<td>0.680 ± 0.003</td>
+<td>0.906 ± 0.010</td>
+<td>0.887 ± 0.006</td>
+<td>0.057 ± 0.006</td>
+</tr>
+<tr>
+<td>history_attention</td>
+<td>0.952 ± 0.003</td>
+<td>0.710 ± 0.012</td>
+<td>0.752 ± 0.012</td>
+<td>0.739 ± 0.017</td>
+<td>0.038 ± 0.002</td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr>
+<th>Paired comparison ($\text{full} - X$)</th>
+<th>Metric</th>
+<th>$\Delta$</th>
+<th>95% CI</th>
+<th>$p$</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>vs no_memory</td>
+<td>StateExact</td>
+<td>+0.164</td>
+<td>[+0.102, +0.217]</td>
+<td>&lt; 0.001</td>
+</tr>
+<tr>
+<td>vs no_memory</td>
+<td>RevF1</td>
+<td>−0.014</td>
+<td>[−0.029, +0.032]</td>
+<td>0.91</td>
+</tr>
+<tr>
+<td>vs no_memory</td>
+<td>RPC</td>
+<td>+0.014</td>
+<td>[−0.048, +0.104]</td>
+<td>0.60</td>
+</tr>
+<tr>
+<td>vs history_attention</td>
+<td>StateExact</td>
+<td>−0.067</td>
+<td>[−0.111, −0.028]</td>
+<td>0.002</td>
+</tr>
+<tr>
+<td>vs history_attention</td>
+<td>RevF1</td>
+<td>+0.151</td>
+<td>[+0.112, +0.227]</td>
+<td>&lt; 0.001</td>
+</tr>
+<tr>
+<td>vs history_attention</td>
+<td>RPC</td>
+<td>+0.185</td>
+<td>[+0.114, +0.347]</td>
+<td>&lt; 0.001</td>
+</tr>
+<tr>
+<td>vs no_delta</td>
+<td>all five</td>
+<td></td>
+<td></td>
+<td>0.09 to 0.39</td>
+</tr>
+</tbody>
+</table>
+<p>Reading this as carefully as we can:</p>
+<ul>
+<li>Carrying state across snapshots does help state tracking relative to recomputing from one chunk. But that is not evidence for <em>persistence</em>; <code>history_attention</code> has no persistence and does better still. It is evidence for <strong>access to history</strong>, which attention delivers more faithfully than a 16-slot recurrent bottleneck.</li>
+<li>The memory's apparent advantage on revision over <code>no_memory</code> dissolved under the bootstrap. Its advantage over <code>history_attention</code> on revision did not.</li>
+<li>The learned delta operator is indistinguishable from subtraction on everything.</li>
+</ul>
+<p>The interpretation we currently hold, and hold loosely:</p>
+<blockquote>
+<p><strong>Attention over history seems good at "what is true now." A persistent reference seems good at "did that just change."</strong></p>
+</blockquote>
+<p>That is close to the inverse of where we started, where persistence was what <em>maintained</em> meaning. We would not have seen it without the control we did not plan to run.</p>
+<h3 id="44-the-hybrid-acting-on-that-reading">4.4 The hybrid: acting on that reading</h3>
+<p>Rather than defend the original design, we split the two jobs:</p>
+<p>$$
+\hat M_t = A(H_{\le t}) \qquad\text{history attention: current state}
+$$</p>
+<p>$$
+\hat R_t = g\big(P_{t-1},\; \hat M_t,\; \hat M_t - P_{t-1}\big) \qquad\text{gate compares against a committed reference}
+$$</p>
+<p>$$
+P_t =
+\begin{cases}
+P_{t-1} &amp; \hat R_t = \text{CONTINUE} \\
+\hat M_t &amp; \text{otherwise}
+\end{cases}
+\qquad\text{(training uses the soft form } P_t = (1-w_t)P_{t-1} + w_t \hat M_t,\; w_t = 1 - p(\text{CONTINUE}))
+$$</p>
+<p>The summary reads $\hat M_t$. The reference $P_t$ is no longer responsible for remembering the utterance; it is a reference point for temporal comparison, updated only when the gate says the meaning moved. History attention is masked so slot queries at snapshot $s$ attend only to frames from snapshots $\le s$.</p>
+<table>
+<thead>
+<tr>
+<th>Metric</th>
+<th>Hybrid (3 seeds)</th>
+<th>full, for reference</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>PSA</td>
+<td>0.954 ± 0.002</td>
+<td>0.933</td>
+</tr>
+<tr>
+<td>StateExact</td>
+<td>0.727 ± 0.014</td>
+<td>0.643</td>
+</tr>
+<tr>
+<td>RevF1</td>
+<td>0.884 ± 0.005</td>
+<td>0.903</td>
+</tr>
+<tr>
+<td>RPC</td>
+<td>0.946 ± 0.038</td>
+<td>0.923</td>
+</tr>
+<tr>
+<td>UnnecState</td>
+<td><strong>0.025 ± 0.006</strong></td>
+<td>0.056</td>
+</tr>
+</tbody>
+</table>
+<p>Best on four of five; unnecessary state changes less than half the original's. This is the first point where the architecture looked like it was doing what we wanted. It is also the point where we had made the most design decisions <em>after</em> seeing data, which is why what follows was selected on <code>test</code> and then re-run on fresh seeds, and why the holdout stays sealed.</p>
+<h3 id="45-what-should-the-gate-compare-single-seed">4.5 What should the gate compare? (single seed)</h3>
+<table>
+<thead>
+<tr>
+<th>Mode</th>
+<th>Gate input</th>
+<th>StateExact</th>
+<th>RevF1</th>
+<th>RPC</th>
+<th>UnnecState</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>concat</td>
+<td>$[P ; \hat M]$</td>
+<td>0.728</td>
+<td>0.889</td>
+<td>0.919</td>
+<td>0.032</td>
+</tr>
+<tr>
+<td><strong>diff</strong></td>
+<td>$[P ; \hat M ; \hat M - P]$</td>
+<td>0.736</td>
+<td>0.905</td>
+<td>0.960</td>
+<td>0.026</td>
+</tr>
+<tr>
+<td>delta</td>
+<td>$[P ; \hat M ; \Delta_\theta(P, \hat M)]$</td>
+<td>0.693</td>
+<td>0.888</td>
+<td>0.892</td>
+<td>0.035</td>
+</tr>
+<tr>
+<td>delta_only</td>
+<td>$[\Delta_\theta(P, \hat M)]$</td>
+<td>0.733</td>
+<td>0.893</td>
+<td>0.960</td>
+<td>0.032</td>
+</tr>
+</tbody>
+</table>
+<p>Plain subtraction won; the 2.6M-parameter learned operator was worst. Margin over the runner-up on the composite $\tfrac14(\text{StateExact} + \text{RPC} + (1-\text{UnnecState}) + \text{RevF1})$ was +0.005, single seed, so "won" is generous.</p>
+<h3 id="46-how-many-slots-single-seed">4.6 How many slots? (single seed)</h3>
+<table>
+<thead>
+<tr>
+<th>$N$</th>
+<th>8</th>
+<th>16</th>
+<th>32</th>
+<th>64</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>StateExact</td>
+<td>0.763</td>
+<td>0.749</td>
+<td>0.717</td>
+<td>0.755</td>
+</tr>
+</tbody>
+</table>
+<p>No trend. Capacity is not the bottleneck here, though on a 7-slot task with a closed vocabulary perhaps that is unsurprising.</p>
+<p>Selected and frozen: <code>hybrid · diff · 8 slots · bounded_80</code>. Re-run on three seeds on val: PSA 0.942 ± 0.006, RevF1 0.911 ± 0.014.</p>
+<h3 id="47-stage-3a-the-summary-head-first-attempt">4.7 Stage 3a: the summary head, first attempt</h3>
+<p>Train the GPT-2 adapters to generate the summary freely from $\hat M_t$ at every snapshot. Before trusting any numbers we audited the evaluator and found it comparing decoded slot dictionaries rather than generated text. Fixed; everything below is on generated text.</p>
+<p>Pre-registered rule, written before the corrected metrics existed: maximise SSC subject to $\text{UnnecEdit} &lt; 0.15$ (the transcript-LM baseline's churn).</p>
+<table>
+<thead>
+<tr>
+<th>Metric (3 seeds, val)</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>SSC</td>
+<td>0.893 ± 0.009</td>
+</tr>
+<tr>
+<td>SummaryExact</td>
+<td>0.497 ± 0.042</td>
+</tr>
+<tr>
+<td><strong>UnnecEdit</strong></td>
+<td><strong>0.256 ± 0.065</strong> (bar: &lt; 0.15)</td>
+</tr>
+<tr>
+<td>MeanEdit on CONTINUE</td>
+<td>0.54 tokens</td>
+</tr>
+<tr>
+<td>MeanEdit on REVISE</td>
+<td>1.89 tokens</td>
+</tr>
+</tbody>
+</table>
+<p>Failed. The content is mostly right (SSC 0.89), but the summary reworded itself on a quarter of the snapshots where nothing changed. Per-snapshot error decomposition, pooled over seeds:</p>
+<table>
+<thead>
+<tr>
+<th>Category</th>
+<th>Share</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>A: state wrong</td>
+<td>21.4%</td>
+</tr>
+<tr>
+<td>B: state right, summary wrong</td>
+<td>18.0%</td>
+</tr>
+<tr>
+<td>C: correct</td>
+<td>44.6%</td>
+</tr>
+<tr>
+<td>D: meaning changed, summary did <strong>not</strong> update</td>
+<td>10.2%</td>
+</tr>
+<tr>
+<td>E: nothing changed, summary changed anyway</td>
+<td>5.6%</td>
+</tr>
+</tbody>
+</table>
+<p>We did not move the threshold. Category D is what bothered us: the gate said REVISE, the state was correct, and the generated text stayed at <em>Book a hotel for next week</em> when the gold was <em>Book a hotel for Sunday</em>. Nothing in the architecture <em>obliged</em> the text to obey the decision the gate had already made.</p>
+<h3 id="48-stage-3b-make-the-gate-control-the-editor">4.8 Stage 3b: make the gate control the editor</h3>
+<p>The intervention was confined to the realization path; the semantic stack stayed frozen.</p>
+<p>$$
+S_t =
+\begin{cases}
+S_{t-1} &amp; \hat R_t = \text{CONTINUE} \quad\text{(hard copy; no LM call at all)} \\
+\mathrm{LM}\big(\text{"Summary: } S_{t-1}\text{\textbackslash n}\,\text{mode:"}\;\big|\; \text{cross-attn on } \hat M_t\big) &amp; \hat R_t \in \{\text{REFINE}, \text{REVISE}\}
+\end{cases}
+$$</p>
+<p>Evaluation is fully closed-loop: the branch decision and the previous summary both come from the model, never from gold. Two tests pin this (one structural, one behavioural with a stub LM confirming step $t$'s prompt contains step $t-1$'s generated output and that CONTINUE issues zero LM calls).</p>
+<table>
+<thead>
+<tr>
+<th>Metric</th>
+<th>Stage 3a</th>
+<th>Stage 3b</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>UnnecEdit</td>
+<td>0.256</td>
+<td><strong>0.0145</strong></td>
+</tr>
+<tr>
+<td>Category E (spurious edit)</td>
+<td>5.6%</td>
+<td><strong>0.3%</strong></td>
+</tr>
+<tr>
+<td>CSR</td>
+<td>n/a</td>
+<td>0.986</td>
+</tr>
+<tr>
+<td>RRR</td>
+<td>n/a</td>
+<td><strong>0.548</strong> (bar: &gt; 0.80)</td>
+</tr>
+<tr>
+<td>Category D (meaning changed, summary didn't)</td>
+<td>10.2%</td>
+<td><strong>35.2%</strong></td>
+</tr>
+<tr>
+<td>SSC</td>
+<td>0.893</td>
+<td>0.613</td>
+</tr>
+<tr>
+<td>SummaryExact</td>
+<td>0.497</td>
+<td><strong>0.000</strong></td>
+</tr>
+</tbody>
+</table>
+<p>Also failed, in the opposite direction. The churn problem is gone: hard-copying on CONTINUE removed generation drift <em>by construction</em>. But the editor produces garbage:</p>
+<pre><code>gold label     REFINE
+spoken         &quot;sometime next week&quot;
+state correct  True
+S_{t-1}        'Raynaoll.'
+S_t            'Raynaoll.'
+gold           'Book a hotel for next week.'
+</code></pre>
+<p>That is not degraded English. SummaryExact is exactly 0.000 on all three seeds, and because CONTINUE now copies forward whatever came before, the garbage propagates, which is why category D tripled.</p>
+<p>We do not currently read this as evidence against gate-controlled editing. We read it as an editor that is broken or under-trained, with three candidate causes we have not yet separated:</p>
+<ol>
+<li>Stage 3b's adapters start from scratch (the stage-2 init checkpoint has no adapter weights) on the same 30-epoch budget stage 3a had for an easier task.</li>
+<li>Training excluded CONTINUE snapshots, so the editor saw roughly a third of the data.</li>
+<li>The prompt interface <code>Summary: {prev}\n{mode}:</code> may be the wrong shape for what a small cross-attention adapter can learn.</li>
+</ol>
+<p>These call for different fixes, so we want to know which before changing anything.</p>
+<hr />
+<h2 id="5-where-that-leaves-the-idea">5. Where that leaves the idea</h2>
+<p>Decomposing the original goal into three linked pieces, our current, tentative scorecard:</p>
+<pre><code>speech  →  current meaning-state  →  semantic change detection  →  stable summary
+               (looks OK)                 (looks OK)                 (not yet)
+</code></pre>
+<p><strong>What the runs suggest</strong>, on synthetic speech, at $\ell = 80$ ms, across three seeds, on development data:</p>
+<ul>
+<li>Frozen streaming-ASR states carry enough structure to recover a small closed slot schema.</li>
+<li>A gate with no access to text can separate "meaning changed" from "correction word appeared" far better than keyword matching.</li>
+<li>Attention over history estimates the current state better than a recurrent memory of the same size; a persistent reference detects change better than history attention alone; splitting the two jobs looks better than asking one representation to do both.</li>
+<li>The learned delta operator earns nothing over subtraction.</li>
+<li>Slot capacity is not a bottleneck between 8 and 64 on this task.</li>
+</ul>
+<p><strong>What the runs do not show</strong>, and we want to be precise here:</p>
+<ul>
+<li>That any of this survives real speech. Every audio sample is TTS over a closed vocabulary with scripted corrections.</li>
+<li>That the semantic state can be realized as a stable, correct natural-language summary. Both attempts failed their pre-registered criteria.</li>
+<li>Anything about strict causality. $\ell = 0$ was never run.</li>
+<li>Anything about latency. The latency script was never executed. The 100 to 200 ms requirement is unmeasured.</li>
+<li>Anything on a clean test set. Both <code>val</code> and <code>test</code> were used for selection at some point.</li>
+</ul>
+<hr />
+<h2 id="6-what-we-learned-about-running-the-experiment">6. What we learned about running the experiment</h2>
+<p>These are the parts we are more confident about than any number above, because they are about process rather than mechanism.</p>
+<h3 id="61-five-silent-bugs">6.1 Five silent bugs</h3>
+<p>None crashed. Each produced plausible numbers that meant something other than what they appeared to mean.</p>
+<p><strong>A gate that starts closed must still let gradient into what it gates.</strong> The GPT-2 adapter used a zero-initialised $\tanh$ gate so it would start as a no-op:
+$$h \leftarrow h + \tanh(\alpha)\cdot \mathrm{branch}(h), \qquad \alpha_0 = 0.$$
+$\tanh(0) = 0$, so every tensor inside the branch is multiplied by zero in the forward pass and receives exactly zero gradient. All 78 adapter tensors got none. Training would have completed and returned bare GPT-2. Fix: a plain multiplier $\gamma = 10^{-3}$ instead of a saturating gate, so the residual branch starts near zero <em>and</em> gradient flows on step one.</p>
+<p><strong>Padded snapshots drifted.</strong> Finished utterances in a batch kept accumulating state from padding frames. Loss and metrics were both computed on drifted state.</p>
+<p><strong>The baseline's scorer double-matched.</strong> Scoring the transcript-LM needs text → slots. "five PM" populated both <code>time</code> and <code>count</code>, charging the baseline for slots it never expressed and flattering our model. Fix: consume matched spans longest-first; round-trip now exact on 1,892 snapshots.</p>
+<p><strong>Two ablations crashed and looked like they were loading.</strong> An in-place <code>copy_</code> broke autograd on the first backward. Logs ended after the config banner, which reads as a job still initialising.</p>
+<p><strong>Evaluation loaded checkpoints into the wrong architecture.</strong> The evaluator always built the default model regardless of which ablation a checkpoint came from. One ablation crashed on a size mismatch, which is what exposed it. The other two loaded silently and produced a full table of meaningless numbers that we reported before catching.</p>
+<blockquote>
+<p><strong>Note to self.</strong> Configuration and plumbing errors are invisible in metrics because they produce plausible metrics. After this we stopped relying on inspection and added mechanical guards: checkpoints carry structured architecture metadata, and loaders refuse mismatches.</p>
+</blockquote>
+<h3 id="62-two-protocol-failures">6.2 Two protocol failures</h3>
+<p>These worried us more than the bugs. A bug produces a wrong number. A protocol failure produces a <em>right</em> number that answers the wrong question, and you cannot detect it after the fact.</p>
+<p><strong>Silent architecture mismatch.</strong> A stage-3 run was launched without <code>--arch</code>. A V0 model was built, hybrid weights were loaded non-strictly, most were discarded, and the checkpoint recorded <code>arch: v0</code> while initialising from a hybrid. Quarantined and excluded from every table. Stage 3 now refuses to start unless the init checkpoint matches a frozen config file.</p>
+<p><strong>Test-set contamination.</strong> The gate-input mode and slot count were both chosen by comparing numbers on <code>test</code>. <code>val</code> was already spent on checkpoint selection. Neither split could support a final claim. Hence: a 120-utterance holdout generated from unused seed space with asserted zero id and zero transcript overlap; explicit split roles (<code>fit / select / final</code>); and an evaluator that refuses a final evaluation on any split whose role is not <code>final</code>.</p>
+<blockquote>
+<p><strong>Note to self.</strong> Pre-registration only protects the thresholds you wrote down. It does not protect you from quietly spending the data the thresholds were meant to be checked on.</p>
+</blockquote>
+<h3 id="63-five-api-mismatches-in-the-encoder-wrapper">6.3 Five API mismatches in the encoder wrapper</h3>
+<p>The NeMo wrapper was written from documentation and had never executed. Chunk size was off by 160× (feature frames, not audio samples). The streaming call takes preprocessed features, not raw audio. It returns 6 values, not 7, and they are predictions, not encoder states. <code>pad_and_drop_preencoded=True</code> is required or the first chunk encodes to zero frames. The RNN-T decoder cannot stream at all in this version. Each is obvious once you run the code and none is obvious from reading about it.</p>
+<h3 id="64-things-that-only-became-visible-with-the-right-control">6.4 Things that only became visible with the right control</h3>
+<p>The <code>history_attention</code> ablation was not in the plan. Without it, <code>full</code> beating <code>no_memory</code> on state tracking would have been attributed to persistence when it was attributable to having access to history at all. The single most informative run in the set was one a reviewer had to ask for twice.</p>
+<hr />
+<h2 id="7-open-questions">7. Open questions</h2>
+<p><strong>On the mechanism</strong></p>
+<ul>
+<li>Is "history attention for state, persistent reference for change" a property of the problem, or an artefact of a 16-slot recurrent bottleneck being lossy on a 7-slot task? Would a larger recurrent state close the gap?</li>
+<li>The gate never sees text. Is it detecting <em>meaning</em> change, or acoustic change that happens to correlate with meaning change in TTS audio with scripted corrections? The hard negatives are some evidence for the former, but they were produced by the same templates.</li>
+<li>Why does the learned delta contribute nothing? Is subtraction sufficient in a space trained to be roughly linear in slot values, or is the operator under-trained?</li>
+</ul>
+<p><strong>On realization</strong></p>
+<ul>
+<li>Is stage 3b's failure an editor bug, or does gate-controlled editing have a structural problem we have not seen yet, such as the editor never observing what "leave it alone" looks like?</li>
+<li>Should the editor be trained on all three transition types, stable cases included, rather than only on REFINE / REVISE?</li>
+<li>Is exact match against a template a sensible target for a generated summary at all? SSC was our attempt at a semantic alternative and it still depends on the closed vocabulary.</li>
+</ul>
+<p><strong>On the experiment itself</strong></p>
+<ul>
+<li>The closed 7-slot schema is a category error relative to the stated requirement: "what was meant" is open-domain. Did we learn anything about the <em>real</em> problem, or only about slot filling? The honest answer is that we learned about the mechanism under conditions where the mechanism has every advantage, and nothing yet about whether those conditions transfer.</li>
+<li>Strict causality and latency are the two requirements the design is supposed to serve, and neither is measured. What is the price of $\ell = 0$?</li>
+</ul>
+<hr />
+<h2 id="8-where-this-is-heading-v1-and-the-pushback-on-it">8. Where this is heading: V1, and the pushback on it</h2>
+<p>V0 is frozen as a diagnostic. V1 is a separate package that keeps the two things V0 seemed to support (the frozen encoder, and the split between a history-based current-meaning estimator and a persistent reference for change) and discards the thing V0 could never test.</p>
+<p><strong>No schema.</strong> No <code>intent</code>, no <code>date</code>, no slot with a human-assigned meaning. The model maintains $K$ latent meaning tokens $C_t \in \mathbb{R}^{K \times d}$ as a computational bottleneck. Token 0 does not mean anything. Sweeping $K$ is a capacity experiment, not an ontology choice. Tests fail if any V1 module imports the V0 schema, defines a field list, or reintroduces the CONTINUE / REFINE / REVISE taxonomy. V1 predicts a scalar $r_t = P(\text{changed})$.</p>
+<p><strong>Free-form supervision.</strong> A teacher LLM describes the state of the conversation at each prefix in prose, $S^*_t$. A frozen sentence encoder $E$ embeds it. The stage-A objective is</p>
+<p>$$
+\mathcal L_{\text{meaning}} = 1 - \cos\big(\mathrm{proj}(C_t),\, E(S^*_t)\big)
+$$</p>
+<p>with two auxiliaries to stop the model from learning ASR compression and calling it meaning:</p>
+<p>$$
+\mathcal L_{\text{equiv}} = 1 - \cos\big(z^{(a)}, z^{(b)}\big) \quad\text{(paraphrases of the same state)}
+$$</p>
+<p>$$
+\mathcal L_{\text{contrast}} = \max\big(0,\; \cos(z, z^{-}) - (1 - m)\big) \quad\text{("Tuesday" vs "Thursday", } m = 0.3)
+$$</p>
+<p><strong>Soft, sparse memory writes.</strong></p>
+<p>$$
+W_t = \sigma\big(f(C_t, P_{t-1}, C_t - P_{t-1})\big) \in [0,1]^{K}, \qquad
+P_t = (1 - W_t) \odot P_{t-1} + W_t \odot C_t
+$$</p>
+<p>$$
+\mathcal L_{\text{write}} = \mathbf 1[y_t = 0]\, \|W_t\|_1, \qquad
+\mathcal L_{\text{stable}} = \mathbf 1[y_t = 0]\, \|P_t - P_{t-1}\|_2
+$$</p>
+<p>so irrelevant speech is allowed to move $C_t$ while leaving $P_t$ alone, and the network chooses <em>which</em> tokens change.</p>
+<p><strong>Real speech.</strong> AMI meeting windows of 2 to 5 minutes, snapshots every 160 to 320 ms, split by meeting. ICSI as an external test later.</p>
+<p><strong>Staged.</strong> A: does the latent bottleneck recover evolving meaning at all? B: does the persistent memory stay still when meaning is stable and move when it is not? C: summary editor, trained on stable <em>and</em> changing transitions. D: only then, joint fine-tuning.</p>
+<h3 id="the-pushback">The pushback</h3>
+<p>We asked the same external reviewer to critique the V1 plan, with explicit permission to say "do not build this." After a literature pass the response was, roughly: keep the schema-free principle, the hybrid split, the contrastive objectives, the staging, and the real data. But <strong>free-text embedding similarity is a weak signal for compositional state</strong> and is likely to produce a fuzzy representation that conflates semantics with surface form. The counter-proposal was a <em>propositional</em> meaning memory: the teacher extracts a dynamically sized set of atomic propositions, the $K$ slots learn to bind to them in the manner of Slot Attention, and change detection becomes set matching over propositions rather than a fuzzy vector comparison.</p>
+<p>We have not decided. The free-text route is simpler and is what is currently scaffolded. The propositional route is more structured and, if the reviewer is right, has a better chance of representing <em>"not Tuesday, because Sarah is on leave"</em> without being a schema. Stage A is designed to be the cheapest possible test of whether the latent bottleneck learns anything at all, and we would rather run it than argue about it.</p>
+<hr />
+<h2 id="9-reproducing-what-is-here">9. Reproducing what is here</h2>
+<pre><code>docs/design/     the original idea, architecture note, V1 plan
+docs/v0/         RESULTS.md (every number with its formula), EXPERIMENT-SPEC.md
+                 (frozen before any result existed), external reviews
+v0/              frozen code: csm.train, csm.eval, scripts/seed_sweep.py
+v1/              csm1 package, in development: stage-A encoder and losses only
+</code></pre>
+<p>Compute was modest. Dataset generation and encoder feature extraction ran on an M3 Pro MacBook on CPU, because NeMo is installed there and nowhere else. All training ran on one RTX 3080: roughly 15 minutes per stage-2 condition and 9 minutes per stage-3b seed. Conda rather than a plain venv, because pip resolves NumPy past the <code>&lt;2</code> pin NeMo needs and installs a torchaudio whose compiled library does not match its torch.</p>
+<pre><code class="language-bash">./setup_env.sh &amp;&amp; conda activate contsum
+cd v0 &amp;&amp; python -m pytest tests/ -q          # 47 tests: 46 pass, 1 skipped (strict regime)
+python -m csm.train --stage 2 --data ../data/v0 --out runs/x \
+       --regime bounded_80 --arch hybrid --compare diff --n-slots 8
+</code></pre>
+<p>If you work on anything adjacent (incremental summarization, dialogue state tracking from audio, disfluency and self-repair, streaming latent memory), we would genuinely like to hear where this framing is wrong.</p>
+  </article>
+  <footer class="out">
+    <p class="colophon">Code and full results record: <a href="https://github.com/Abhay-Sastha-S">github.com/Abhay-Sastha-S</a> · Built by hand, no framework.</p>
+  </footer>
+</div>
+</body>
+</html>

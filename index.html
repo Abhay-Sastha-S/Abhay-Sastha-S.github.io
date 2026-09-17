@@ -1621,23 +1621,65 @@
       </div>
 
       <div class="row">
-        <div class="blk">
-          <div class="empty">
-            <p class="stamp">Nothing here yet</p>
-            <p class="line">
-              The backlog exists — it just lives in scratch files, half-finished notes, and commit messages that
-              made sense for about a day. Once I can get the ideas into an order that survives contact with a
-              reader, they will show up here.
-            </p>
-          </div>
+  <article class="blk">
+    <div class="blk-in">
+      <div>
+        <h3><a href="blog/streaming-speech-to-meaning.html">A live summary that rewrites itself: a first stab at causal speech-to-meaning</a></h3>
+        <p class="meta"><span class="venue">Research notes</span> &nbsp;·&nbsp; September 2026 &nbsp;·&nbsp; work in progress</p>
+        <p class="body">Continuous speech in; an append-only transcript and a summary that fixes itself in place out.
+          We tried to make "did the meaning change?" a property of a latent state rather than of the words, and
+          built a small frozen-encoder experiment to see whether that holds up. Two of the three pieces look
+          promising on synthetic speech; the third does not work yet. Formulation, math, runs, bugs, and the
+          questions we are left with.</p>
+        <p class="refs">
+          <a href="blog/streaming-speech-to-meaning.html">read</a>
+        </p>
+        <div class="tags">
+          <span class="tag">Streaming ASR</span>
+          <span class="tag">Summarization</span>
+          <span class="tag">Latent Memory</span>
+          <span class="tag">Negative Results</span>
         </div>
       </div>
+      <figure class="plate">
+        <svg viewBox="0 0 260 190" role="img" aria-label="Speech stream feeding a meaning state, a change gate, and a summary that only rewrites when the gate fires">
+          <g stroke="#14141a" fill="none" stroke-width="1.1">
+            <path d="M14 95 l8 -18 l8 30 l8 -26 l8 22 l8 -14 l8 10 l8 -6"/>
+          </g>
+          <g stroke="#14141a" stroke-width="1" fill="none" opacity="0.35">
+            <path d="M78 95 L104 95"/>
+          </g>
+          <rect x="104" y="72" width="54" height="46" rx="2" fill="none" stroke="#14141a" stroke-width="1.1"/>
+          <g fill="#14141a" font-family="'JetBrains Mono',monospace" font-size="9.5" text-anchor="middle">
+            <text x="131" y="91">M_t</text><text x="131" y="106" opacity="0.55">state</text>
+          </g>
+          <g stroke="#14141a" stroke-width="1" fill="none" opacity="0.35">
+            <path d="M158 95 L186 95"/>
+          </g>
+          <circle cx="197" cy="95" r="11" fill="none" stroke="#3b2fb0" stroke-width="1.5"/>
+          <text x="197" y="99" text-anchor="middle" fill="#3b2fb0" font-family="'JetBrains Mono',monospace" font-size="10">Δ</text>
+          <g stroke="#3b2fb0" stroke-width="1.5" fill="none">
+            <path d="M208 95 C 224 95, 226 40, 244 40"/>
+          </g>
+          <g stroke="#14141a" stroke-width="1" fill="none" opacity="0.28" stroke-dasharray="3 3">
+            <path d="M208 95 C 224 95, 226 150, 244 150"/>
+          </g>
+          <g fill="#14141a" font-family="'JetBrains Mono',monospace" font-size="8.5">
+            <text x="228" y="30" text-anchor="middle" fill="#3b2fb0">revise</text>
+            <text x="228" y="168" text-anchor="middle" opacity="0.5">keep</text>
+          </g>
+        </svg>
+        <figcaption>rewrite only when the state moves</figcaption>
+      </figure>
+    </div>
+  </article>
+</div>
     </div>
 
     <!-- ======================= FOOTER ======================= -->
     <div class="row">
       <footer class="out">
-        <p class="colophon">Last updated August 2026 · Built by hand, no framework.</p>
+        <p class="colophon">Last updated September 2026 · Built by hand, no framework.</p>
       </footer>
     </div>
 
@@ -1680,6 +1722,13 @@
     evt.currentTarget.classList.add('on');
     evt.currentTarget.setAttribute('aria-selected', 'true');
   }
+  // Open a tab directly from a hash, e.g. index.html#blogs (used by post back-links).
+  (function () {
+    var id = (location.hash || '').slice(1);
+    var panel = id && document.getElementById(id);
+    var tab = id && document.querySelector('.tab[onclick*="\'' + id + '\'"]');
+    if (panel && panel.classList.contains('panel') && tab) tab.click();
+  })();
 </script>
 </body>
 
